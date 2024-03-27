@@ -6,5 +6,5 @@ app = Flask(__name__)
 @app.get('/')
 def home():
 
-    render_template('index.html')
+    return render_template('index.html')
 
