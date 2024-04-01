@@ -2,6 +2,8 @@
     --sidepanes: rgb(243,249,250);
     --overallgray: rgb(238,235,235);
     --websiteblue: rgb(52,119,141);
+    --pfpgray: rgb(217,217,217);
+    --darkgray:rgb(194,194,194);
 }
 
 .navbar{
@@ -111,6 +113,34 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-
 }
 
+.recomm-container{
+    background-color: var(--pfpgray);
+    margin:20px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+}
+
+.recomm-user{
+    background-color: var(--darkgray);
+    padding: 10px;
+}
+
+.recomm-text{
+    margin: 10px;
+}
+
+.recomm-content{
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* _________________________________________________________ */
+
+footer{
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
