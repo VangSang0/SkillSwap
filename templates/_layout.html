@@ -62,45 +62,22 @@
         </div>
 
         <div class="main-cont">
-            <div class="post">
-                <i class="bi bi-person-circle"></i>
-                <span> jinja variable </span>
-                <div class="post-text-btn">
-                    <textarea id="textpostarea" placeholder="Type here"></textarea>
-                    <button type="button" class="btn btn-primary btn-sm" id="post-button">Post</button>
-                </div>
-            </div>
-            <div class="post">
-                <i class="bi bi-person-circle"></i>
-                <span> jinja variable </span>
-                <div class="post-area">
-                    <p id="post-content">
-                        jinja variable | Here goes post content
-                    </p>
-                    <div class="post-btns">
-                        <i class="bi bi-heart"></i>
-                        <i class="bi bi-chat-square-text"></i>
-                        <i class="bi bi-share"></i>
-                    </div>
-                    
-                </div>
-            </div>
+            {% block maincontent %}
+
+
+            {% endblock %} 
         </div>
 
+            
         <div class="main-recomm">
-            <div class="recomm-container">
-                <div class="recomm-user">
-                    <i class="bi bi-person-circle"></i>
-                    <span>username</span>
-                </div>
-                <div class="recomm-text">
-                    <p class="recomm-content">Grade Year: jinja variable</p>
-                    <p class="recomm-content">Concentration: jinja variable</p>
-                    <p class="recomm-content">Completed: jinja variable</p>
-                    <p class="recomm-content">Enrolled: jinja variable</p>
-                </div>     
-            </div>
+            {% block rightcontent%}
+
+
+
+            {% endblock %}
+
         </div>
+
     </div>
     </main>
     <footer>
@@ -108,5 +85,3 @@
     </footer>
 </body>
 </html> 
-<!-- {% block content %}
-        {% endblock %} -->
