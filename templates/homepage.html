@@ -1,0 +1,25 @@
+{% extends "_layout.html" %}
+
+{% block title %}
+    SkillSwap|HomePage
+{% endblock %}
+
+{% block content %}
+    {% for post in posts %}
+        <article class="user-feed">
+            <div class="media-body">
+                <div class="post-information">
+                    <a class="mr-2">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_posted }}</small>
+                </div>
+                <h2 class="post-title">{{ post.title }}</h2>
+                <p class="post-content">{{ post.content }}</p>
+
+                <div class="button-functions">
+                    <button>Like</button>
+                    <button>Comments</button>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+{% endblock content%}

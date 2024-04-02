@@ -7,7 +7,7 @@ posts = [
     {
 
         'author' : 'Sangy Vangy',
-        'title' : 'Blog Post 1',
+        'title' : 'Post 1',
         'content' : 'This is for test purposes only',
         'date_posted' : 'July 3, 2024'
 
@@ -25,5 +25,5 @@ posts = [
 @app.get('/')
 def home():
 
-    return render_template('index.html', posts=posts)
+    return render_template('homepage.html', posts=posts)
 
