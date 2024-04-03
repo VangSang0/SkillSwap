@@ -1,0 +1,146 @@
+:root{
+    --sidepanes: rgb(243,249,250);
+    --overallgray: rgb(238,235,235);
+    --websiteblue: rgb(52,119,141);
+    --pfpgray: rgb(217,217,217);
+    --darkgray:rgb(194,194,194);
+}
+
+.navbar{
+    outline: solid;
+    width: 100%;
+    margin:0;
+    background-color:black;
+    display: flex;
+    flex-direction: row;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.logo p{
+    margin: 0;
+    font-size: 25px;
+    font-weight: 600;
+    color: white;
+}
+
+#searchbar{
+    border-radius: 10px;
+    padding:5px;
+    border:none;
+    width: 600px;
+}
+
+#nav-pfp{
+    color: white;
+    font-size: 30px;
+}
+
+/* _____________________________________________________________ */
+
+.main-body{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.main-nav{
+    padding: 30px;
+    width: 25%;
+    background-color: var(--sidepanes);
+    color: black;
+}
+.main-nav a{
+    color: black;
+}
+.side-tabs{
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    padding-top: 20px;
+}
+
+.main-cont{
+    width: 55%;
+}
+
+.main-recomm{
+    width: 20%;
+    background-color: var(--sidepanes);
+
+}
+
+.post{
+    background-color: var(--overallgray);
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px;
+}
+
+#textpostarea{
+    border-radius: 10px;
+    border: none;
+    margin: 7px;
+    width: 700px;
+    height: 100px;
+}
+
+.post-text-btn{
+    display: flex;
+    flex-direction: row;
+    align-items:end;
+}
+
+#post-button{
+    background-color: var(--websiteblue);
+    height: 30px;
+    width:70px;
+    margin-bottom: 10px;
+}
+
+#post-content{
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.post-btns{
+    font-size: 20px;
+    margin-right: 620px;
+    margin-left: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.recomm-container{
+    background-color: var(--pfpgray);
+    margin:20px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+}
+
+.recomm-user{
+    background-color: var(--darkgray);
+    padding: 10px;
+}
+
+.recomm-text{
+    margin: 10px;
+}
+
+.recomm-content{
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* _________________________________________________________ */
+
+footer{
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
