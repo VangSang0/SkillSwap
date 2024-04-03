@@ -1,3 +1,4 @@
+
 :root{
     --sidepanes: rgb(243,249,250);
     --overallgray: rgb(238,235,235);
@@ -143,4 +144,46 @@ footer{
     color: white;
     text-align: center;
     padding: 10px;
+
 }
+
+/* Styling for the sign up page */
+.signup {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.signup-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 300px;
+}
+.signup-container h2 {
+    text-align: center;
+}
+.signing-up {
+    display: flex;
+    flex-direction: column;
+}
+.signup-container input[type="text"], .signup-container input[type="password"], .signup-container input[type="email"], .signup-container input[type="confirm-password"] {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+.sign-up {
+    background-color: #0079d3;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.sign-up:hover {
+    background-color: #0056a3;
