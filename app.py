@@ -6,5 +6,5 @@ app = Flask(__name__)
 @app.get('/')
 def home():
 
-    return render_template('sign_in.html')
+    return render_template('sign_up.html')
 
