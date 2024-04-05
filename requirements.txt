@@ -10,7 +10,9 @@ packaging==24.0
 pluggy==1.4.0
 psycopg==3.1.18
 psycopg-binary==3.1.18
+psycopg-pool==3.2.1
 pytest==8.1.1
+python-dotenv==1.0.1
 typing_extensions==4.10.0
 tzdata==2024.1
 Werkzeug==3.0.1
