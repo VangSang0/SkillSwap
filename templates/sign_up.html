@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - SkillSwap</title>
+    <title>Sign Up | SkillSwap</title>
     <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
 </head>
 
 <body class="signup">
 
-<div class="signup-container">
-    <h2>Sign Up</h2>
-    <form class="signing-up" method="post">
-        <input type="text" placeholder="Username" required>
-        <input type="email" placeholder="Email" required>
-        <input type="password" placeholder="Password" required>
-        <input type="confirm-password" placeholder="Confirm Password" required>
-        <button class="sign-up" type="submit">Sign Up</button>
-    </form>
-</div>
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <form class="signing-up" action="/signing-up" method="post">
+            <input type="text" placeholder="Username" required>
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <input type="password" placeholder="Confirm Password" required>
+            <button class="sign-up" type="submit">Sign Up</button>
+        </form>
+    </div>
 
 </body>
 </html>
