@@ -30,7 +30,7 @@ def sign_up():
 @app.get('/home')
 def home():
 
-    return render_template('index.html', posts=posts)
+    return render_template('home_page.html', posts=posts)
 
 
 @app.get('/profile')
