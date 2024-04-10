@@ -1,6 +1,14 @@
-from flask import Flask, render_template, redirect, url_for, request
+import os
+from dotenv import load_dotenv
+from flask import Flask, abort, render_template, redirect, url_for, request, session
+from repositories import database_methods
+from flask_bcrypt import Bcrypt
 
+
+load_dotenv()
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
+app.secret_key= os.getenv('SECRET_KEY')
 
 
 # Dummy Data
@@ -30,17 +38,38 @@ def sign_in():
 
 @app.post('/signing-in')
 def signing_in():
-
+    username = request.form.get('username')
+    password = request.form.get('password')
+    if not username or not password:
+        abort(400) # Will change this later, placeholder for now
+    user = database_methods.get_user_by_username(username)
+    if user is None:
+        abort(401) # Will change this later, placeholder for now
+    if not bcrypt.check_password_hash(user['hashed_password'], password):
+        abort(401) # Will change this later, placeholder for now
+    session['user_id'] = user['user_id']
     return redirect(url_for('home_page'))
 
 
 @app.get('/sign-up')
 def sign_up_tab():
-
     return render_template('sign_up.html')
 
 @app.post('/signing-up')
 def signing_up():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
+    if password != confirm_password:
+        abort(400) # Will change this later, placeholder for now
+    if not username or not password:
+        abort(400) # Will change this later, placeholder for now
+
+    existing_user = database_methods.does_user_exist(username)
+    if existing_user is not None:
+        abort(400) # Will change this later, placeholder for now
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    database_methods.create_user(username, hashed_password)
 
     return redirect(url_for('sign_in'))
 
@@ -50,7 +79,8 @@ def signing_up():
 
 @app.get('/home-page')
 def home_page():
-
+    if 'user_id' not in session:
+        return redirect(url_for('sign_in'))
     return render_template('home_page.html', posts=posts)
 
 
