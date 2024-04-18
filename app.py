@@ -83,7 +83,7 @@ def signing_up():
         flash("Password must be at least 8 characters long")
         return redirect(url_for('sign_up_tab'))  
 
-    elif not re.search(r"[a-z]", password) or not re.search(r"[A-Z]", password) or not re.search(r"\d", password) or not re.search(r"[!@#$%^&*_]", password):
+    elif not re.search(r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_])", password):
         flash("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!, @, #, $, %, ^, &, *, _)")
         return redirect(url_for('sign_up_tab')) 
 
