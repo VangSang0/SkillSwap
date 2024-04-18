@@ -17,16 +17,31 @@ def does_user_exist(username: str) -> bool:
                             ''', [username])
             user_id = cursor.fetchone()
             return user_id is not None
-        
-def create_user(username: str, password: str):
+
+def does_email_exist(email: str) -> bool:
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute('''
-                            INSERT INTO app_user (username, password)
-                            VALUES (%s, %s)
+                            SELECT 
+                                user_id
+                            FROM 
+                                app_user 
+                            WHERE 
+                                email = %s
+                            ''', [email])
+            user_id = cursor.fetchone()
+            return user_id is not None
+
+def create_user(user_email: str, username: str, hashed_password: str):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            INSERT INTO app_user (email, username, password)
+                            VALUES (%s, %s, %s)
                             RETURNING user_id
-                            ''', [username, password])
+                            ''', [user_email,username, hashed_password])
             user_id = cursor.fetchone()
             if user_id is None:
                 raise Exception('User not created')
@@ -37,7 +52,7 @@ def create_user(username: str, password: str):
 def get_user_by_username(username: str) -> dict[str, Any] | None:  
     pool = get_pool()
     with pool.connection() as connection:
-        with connection.cursor(cursor_factory=dict_row) as cursor:
+        with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
                             SELECT 
                                 user_id, 
@@ -53,4 +68,3 @@ def get_user_by_username(username: str) -> dict[str, Any] | None:
                 return None
             else:
                 return user
-            

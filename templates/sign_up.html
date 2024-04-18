@@ -14,12 +14,44 @@
         <form class="signing-up" action="/signing-up" method="post">
 
             <label for="email" class="form-label">Email</label>
+            {% for message in get_flashed_messages() %}
+                {% if "Email" in message %}
+                    <div class="alert-message" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
             <input type="email" class="form-control" id="email" name="email" required>
+
             <label for="username" class="form-label">Username</label>
+            {% for message in get_flashed_messages() %}
+                {% if "Username" in message %}
+                    <div class="alert-message" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
             <input type="text" class="form-control" id="username" name="username" required>
+
             <label for="password" class="form-label">Password</label>
+            {% for message in get_flashed_messages() %}
+                {% if "Password" in message %}
+                    <div class="alert-message" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
             <input type="password" class="form-control" id="password" name="password" required>
             <label for="confirm-password" class="form-label">Confirm Password</label>
+
+            {% for message in get_flashed_messages() %}
+                {% if "Passwords do not match" in message %}
+                    <div class="alert-message" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            
             <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
 
             <button class="sign-up" type="submit">Sign Up</button>
