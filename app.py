@@ -1,4 +1,4 @@
-import os
+import os, re
 from dotenv import load_dotenv
 from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods
@@ -68,31 +68,28 @@ def signing_up():
 
     # Validation section
     if not username or not password or not user_email:
-        flash("Please enter the required fields")
-    elif password.__contains__(' ') or username.__contains__(' '):
+        flash("Please enter all required fields")
+        return redirect(url_for('sign_up_tab'))  
+
+    elif ' ' in username or ' ' in password:
         flash("Username or Password cannot contain spaces")
-        return redirect(url_for('sign_up_tab'))
+        return redirect(url_for('sign_up_tab'))  
+
     elif len(username) < 4:
         flash("Username must be at least 4 characters long")
-        return redirect(url_for('sign_up_tab'))
+        return redirect(url_for('sign_up_tab'))  
+
     elif len(password) < 8:
         flash("Password must be at least 8 characters long")
-        return redirect(url_for('sign_up_tab'))
-    elif password.islower() or password.isupper():
-        flash("Password must contain at least one uppercase and one lowercase letter")
-        return redirect(url_for('sign_up_tab'))
-    elif password.isalpha():
-        flash("Password must contain at least one number")
-        return redirect(url_for('sign_up_tab'))
-    elif password.isnumeric():
-        flash("Password must contain at least one letter")
-        return redirect(url_for('sign_up_tab'))
-    elif not any(char in password for char in '!@#$%^&*_'):
-        flash("Password must contain at least one special character (!, @, #, $, %, ^, &, *, _)")
-        return redirect(url_for('sign_up_tab'))
+        return redirect(url_for('sign_up_tab'))  
+
+    elif not re.search(r"[a-z]", password) or not re.search(r"[A-Z]", password) or not re.search(r"\d", password) or not re.search(r"[!@#$%^&*_]", password):
+        flash("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!, @, #, $, %, ^, &, *, _)")
+        return redirect(url_for('sign_up_tab')) 
+
     elif password != confirm_password:
         flash("Passwords do not match, please try again")
-        return redirect(url_for('sign_up_tab'))
+        return redirect(url_for('sign_up_tab'))  
 
     existing_email = database_methods.does_email_exist(user_email)
     if existing_email:
@@ -105,7 +102,9 @@ def signing_up():
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = database_methods.create_user(user_email, username, hashed_password)
+
     flash(f"Account created successfully {new_user['username']}! Please sign in to continue.")
+
 
     return redirect(url_for('sign_in'))
 
@@ -122,12 +121,14 @@ def home_page():
 
 @app.get('/profile-page')
 def profile():
-
+    if 'user_id' not in session:
+        return redirect(url_for('sign_in'))
     return render_template('profile.html')
 
 @app.get('/friends-page')
 def friends():
-
+    if 'user_id' not in session:
+        return redirect(url_for('sign_in'))
     return render_template('friends_page.html')
 
 
