@@ -5,10 +5,13 @@
     <div class="post">
         <i class="bi bi-person-circle"></i>
         <span> jinja variable </span>
-        <div class="post-text-btn">
-            <textarea id="textpostarea" placeholder="Type here"></textarea>
-            <button type="button" class="btn btn-primary btn-sm" id="post-button">Post</button>
-        </div>
+        <form action="/user-post" method="post">
+            <div class="post-text-btn">
+                <textarea name="post-content" id="textpostarea" placeholder="Type here" maxlength="255"></textarea>
+                <span id="char-count">255 characters remaining</span>
+                <button type="submit" class="btn btn-primary btn-sm" id="post-button">Post</button>
+            </div>
+        </form>
     </div>
     {% for post in posts %}
         <div class="post">

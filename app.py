@@ -65,3 +65,18 @@ def friends():
     return render_template('friends_page.html')
 
 
+
+@app.post('/user-post')
+def user_post():
+    post_content = request.form.get('post-content')
+    print(post_content)
+
+    #Place holder for the post just because we haven't approved user authentication
+    post = {
+        'author' : 'John Doe',
+        'title' : 'User Post',
+        'content' : post_content,
+        'date_posted' : 'July 4, 2024'
+    }
+    posts.append(post)
+    return redirect(url_for('home_page'))
