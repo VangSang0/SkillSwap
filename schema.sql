@@ -1,3 +1,7 @@
+-- For now, creating tables into a dummydata database for testing purposes
+-- This will be changed to a real database in the future
+
+-- CREATE DATABASE IF NOT EXISTS dummydata; just in case we need to create the database
 
 CREATE TABLE IF NOT EXISTS Users(
     user_id         SERIAL,   
@@ -17,6 +21,7 @@ CREATE TABLE IF NOT EXISTS Posts(
     num_likes       INTEGER,    
     num_comments    INTEGER,
     datetime_post   DATETIME
+    post_conent     VARCHAR(255)    NOT NULL,
 
     PRIMARY KEY(post_id);
     FOREIGN KEY author_id REFERENCES Users(user_id)
@@ -24,8 +29,8 @@ CREATE TABLE IF NOT EXISTS Posts(
 
 CREATE TABLE IF NOT EXISTS Comments(
     comment_id      SERIAL,
-    comm_author_id  VARCHAR(225)    NOT NULL,
-    post_id         VARCHAR(225)    NOT NULL,
+    comm_author_id  INTEGER    NOT NULL,
+    post_id         INTEGER    NOT NULL,
     datetime_posted DATETIME,
     content         VARCHAR(255)    NOT NULL,
 
@@ -45,16 +50,16 @@ CREATE TABLE IF NOT EXISTS Courses(
 );
 
 CREATE TABLE IF NOT EXISTS Friends(
-    friend_id       VARCHAR(225)    NOT NULL,
-    ffnamee         VARCHAR(225)    NOT NULL,
-    flname          VARCHAR(225)    NOT NULL,
+    friend_user_id       SERIAL    NOT NULL,
+    user_id              SERIAL    NOT NULL,
 
-    PRIMARY KEY(friend_id)
+    PRIMARY KEY(friend_user_id),
+    FOREIGN KEY user_id REFERENCES Users(user_id)
     );
 
 CREATE TABLE IF NOT EXISTS User_Courses(
-    user_id         VARCHAR(225)    NOT NULL,
-    course_id       VARCHAR(225)    NOT NULL,
+    user_id         INTEGER    NOT NULL,
+    course_id       INTEGER    NOT NULL,
 
     PRIMARY KEY(user_id, course_id),
     FOREIGN KEY user_id REFERENCES Users(user_id),
