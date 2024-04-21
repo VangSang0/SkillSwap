@@ -111,8 +111,8 @@ def signing_up():
 
 @app.get('/logout')
 def logout():
-
     session.pop('user_id', None)
+    flash("You have been successfully logged out!")
     return redirect(url_for('sign_in'))
 
 
