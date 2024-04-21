@@ -1,7 +1,7 @@
 import os, re
 from dotenv import load_dotenv
 from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
-from repositories import database_methods
+from repositories import database_methods, other_methods
 from flask_bcrypt import Bcrypt
 
 
@@ -109,26 +109,33 @@ def signing_up():
     return redirect(url_for('sign_in'))
 
 
+@app.get('/logout')
+def logout():
 
+    session.pop('user_id', None)
+    return redirect(url_for('sign_in'))
 
 
 @app.get('/home-page')
+@other_methods.check_user # This is a decorator that checks if the user is signed in
 def home_page():
-    if 'user_id' not in session:
-        return redirect(url_for('sign_in'))
     return render_template('home_page.html', posts=posts)
 
 
 @app.get('/profile-page')
+@other_methods.check_user
 def profile():
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
     return render_template('profile.html')
 
 @app.get('/friends-page')
+@other_methods.check_user
 def friends():
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
     return render_template('friends_page.html')
 
-
+@app.get('/settings-page')
+def settings():
+    return render_template('settings_page.html')
