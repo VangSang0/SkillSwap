@@ -10,6 +10,11 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.secret_key= os.getenv('SECRET_KEY')
 
+friend_list = [
+    {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
+    {"name": "Emma Johnson", "occupation": "Model at Fashion", "distance": "800m away"},
+    {"name": "Nora Wilson", "occupation": "Writer at Newspaper", "distance": "2.5km away"},
+]
 
 # Dummy Data
 posts = [
@@ -32,6 +37,14 @@ posts = [
 ]
 
 @app.get('/')
+<<<<<<< HEAD
+def home():
+    return render_template('index.html')
+
+@app.get('/friends')
+def friends():
+    return render_template('friendsPage.html', friend_list=friend_list)
+=======
 def sign_in():
 
     return render_template('sign_in.html')
@@ -142,3 +155,4 @@ def friends():
 @other_methods.check_user
 def settings():
     return render_template('settings_page.html')
+>>>>>>> main
