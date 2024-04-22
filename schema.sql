@@ -3,6 +3,7 @@
 
 -- CREATE DATABASE IF NOT EXISTS dummydata; just in case we need to create the database
 
+
 CREATE TABLE IF NOT EXISTS Users(
     user_id         SERIAL,   
     first_name      VARCHAR(225)    NOT NULL,   
@@ -14,6 +15,7 @@ CREATE TABLE IF NOT EXISTS Users(
 
     PRIMARY KEY(user_id)
 );
+
 
 CREATE TABLE IF NOT EXISTS Posts(
     post_id         SERIAL,
