@@ -143,17 +143,21 @@ def friends():
 @app.post('/user-post')
 @other_methods.check_user
 def user_post():
+    post_user = database_methods.get_user_by_id(session['user_id'])['username']
+    print(post_user)
     post_content = request.form.get('post-content')
-    print(post_content)
 
     #Place holder for the post just because we haven't approved user authentication
     post = {
-        'author' : 'John Doe',
-        'title' : 'User Post',
+        'author' : post_user,
         'content' : post_content,
         'date_posted' : 'July 4, 2024'
     }
     posts.append(post)
+    post_id = database_methods.add_post(post_user, post_content)
+    if post_id is None:
+        flash("Post was unsuccessful, please try again later")
+
     return redirect(url_for('home_page'))
 
 

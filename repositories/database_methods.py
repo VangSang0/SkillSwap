@@ -68,3 +68,39 @@ def get_user_by_username(username: str) -> dict[str, Any] | None:
                 return None
             else:
                 return user
+
+def get_user_by_id(user_id: int) -> dict[str, Any] | None:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                user_id, 
+                                username
+                            FROM 
+                                Users 
+                            WHERE 
+                                user_id = %s
+                            ''', [user_id])
+            user = cursor.fetchone()
+            if user is None:
+                return None
+            else:
+                return user
+
+
+
+def add_post(user_id: int, post_content: str):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            INSERT INTO Posts (user_id, content)
+                            VALUES (%s, %s)
+                            RETURNING post_id
+                            ''', [user_id, post_content])
+            post_id = cursor.fetchone()
+            if post_id is None:
+                raise Exception('Post not created')
+            else:
+                return post_id
