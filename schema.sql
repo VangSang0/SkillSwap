@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS Users(
 
 CREATE TABLE IF NOT EXISTS Posts(
     post_id         SERIAL,
-    post_author_id  VARCHAR(225)    NOT NULL,
+    post_author_id  INTEGER         NOT NULL,
     num_likes       INTEGER,    
     num_comments    INTEGER,
     datetime_post   TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
