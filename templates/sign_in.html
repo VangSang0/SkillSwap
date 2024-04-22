@@ -7,12 +7,47 @@
     <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet" type="text/css">
 </head>
 <body class="signup">
-
+    <div class="welcome">
+        <h3 class="welcome-message">
+            {% for message in get_flashed_messages() %}
+            
+                {% if "Account created" in message or "logged out" in message %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                {% endif %}
+            {% endfor %}
+        </h3>
+    </div>
     <div class="signup-container">
         <h2>Sign In</h2>
         <form class="signing-in" action="/signing-in" method="post">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <label for="username" class="form-label">Username</label>
+            {% for message in get_flashed_messages() %}
+            
+                {% if "Invalid" in message %}
+                    <div class="alert alert-warning alert-dismissible fade show alert-message" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                {% endif %}
+            {% endfor %}
+            <input type="text" class="form-control" id="username" name="username" required>
+            <label for="password" class="form-label">Password</label>
+            {% for message in get_flashed_messages() %}
+            
+                {% if "Invalid" in message %}
+                    <div class="alert alert-warning alert-dismissible fade show alert-message" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                {% endif %}
+            {% endfor %}
+            <input type="password" class="form-control" id="password" name="password" required>
             <button class="sign-up" type="submit">Sign in</button>
         </form>
         <form action="/sign-up" method="get">
