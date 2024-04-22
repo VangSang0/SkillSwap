@@ -8,7 +8,6 @@ friend_list = [
     {"name": "Nora Wilson", "occupation": "Writer at Newspaper", "distance": "2.5km away"},
 ]
 
-
 @app.get('/')
 def home():
     return render_template('index.html')
