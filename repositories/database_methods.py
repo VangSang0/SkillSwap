@@ -11,7 +11,7 @@ def does_user_exist(username: str) -> bool:
                             SELECT 
                                 user_id
                             FROM 
-                                app_user 
+                                Users 
                             WHERE 
                                 username = %s
                             ''', [username])
@@ -26,22 +26,22 @@ def does_email_exist(email: str) -> bool:
                             SELECT 
                                 user_id
                             FROM 
-                                app_user 
+                                Users 
                             WHERE 
                                 email = %s
                             ''', [email])
             user_id = cursor.fetchone()
             return user_id is not None
 
-def create_user(user_email: str, username: str, hashed_password: str):
+def create_user(first_name : str, last_name : str, user_email: str, username: str, hashed_password: str):
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute('''
-                            INSERT INTO app_user (email, username, password)
-                            VALUES (%s, %s, %s)
+                            INSERT INTO Users (first_name, last_name, email, username, hash_pass)
+                            VALUES (%s, %s, %s, %s, %s)
                             RETURNING user_id
-                            ''', [user_email,username, hashed_password])
+                            ''', [first_name, last_name, user_email, username, hashed_password])
             user_id = cursor.fetchone()
             if user_id is None:
                 raise Exception('User not created')
@@ -57,9 +57,9 @@ def get_user_by_username(username: str) -> dict[str, Any] | None:
                             SELECT 
                                 user_id, 
                                 username,
-                                password AS hashed_password
+                                hash_pass AS hashed_password
                             FROM 
-                                app_user 
+                                Users 
                             WHERE 
                                 username = %s
                             ''', [username])

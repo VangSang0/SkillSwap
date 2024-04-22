@@ -23,6 +23,12 @@
             {% endfor %}
             <input type="email" class="form-control" id="email" name="email" required>
 
+            <label for="first-name" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="first-name" name="first-name" required>
+
+            <label for="last-name" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="last-name" name="last-name" required>
+
             <label for="username" class="form-label">Username</label>
             {% for message in get_flashed_messages() %}
                 {% if "Username" in message %}
@@ -53,7 +59,6 @@
             {% endfor %}
             
             <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
-
             <button class="sign-up" type="submit">Sign Up</button>
         </form>
     </div>
