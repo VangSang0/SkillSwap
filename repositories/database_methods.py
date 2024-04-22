@@ -104,3 +104,49 @@ def add_post(user_id: int, post_content: str):
                 raise Exception('Post not created')
             else:
                 return post_id
+
+
+def get_all_posts():
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                Posts.post_id, 
+                                Users.username AS author,
+                                Posts.num_likes,
+                                Posts.num_comments,
+                                Posts.datetime_post,
+                                Posts.post_content
+                            FROM 
+                                Posts
+                            JOIN
+                                Users
+                            ON
+                                Posts.post_author_id = Users.user_id
+                            ORDER BY 
+                                datetime_post ASC
+                            ''')
+            posts = cursor.fetchall()
+            return posts
+
+
+def get_post_by_id(post_id: int):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                post_id, 
+                                post_author_id,
+                                num_likes,
+                                num_comments,
+                                datetime_post,
+                                post_content
+                            FROM 
+                                Posts
+                            WHERE
+                                post_id = %s
+                            ''', [post_id])
+            post = cursor.fetchone()
+            return post

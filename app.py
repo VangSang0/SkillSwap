@@ -1,4 +1,5 @@
 import os, re
+import random
 from dotenv import load_dotenv
 from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods, other_methods
@@ -121,7 +122,9 @@ def logout():
 @app.get('/home-page')
 @other_methods.check_user # This is a decorator that checks if the user is signed in
 def home_page():
-    return render_template('home_page.html', posts=posts)
+    all_posts = database_methods.get_all_posts()
+    random.shuffle(all_posts)
+    return render_template('home_page.html', all_posts=all_posts)
 
 
 @app.get('/profile-page')

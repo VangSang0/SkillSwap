@@ -13,17 +13,17 @@
             </div>
         </form>
     </div>
-    {% for post in posts %}
+    {% for post in all_posts %}
         <div class="post">
             <div class="post-header">
                 <i class="bi bi-person-circle"></i>
                 <h6 class="poster">{{ post.author }}</h6>
-                <p class="post-date">{{ post.date_posted }}</p>
+                <p class="post-date">{{ post.datetime_post }}</p>
             </div>
             <div class="post-area">
-                <h3 class="post-title">{{ post.title }}</h3>
+                <!-- <h3 class="post-title">{{ post.title }}</h3> -->
                 <p id="post-content">
-                    {{ post.content }}
+                    {{ post.post_content }}
                 </p>
                 <div class="post-btns">
                     <i class="bi bi-heart"></i>
