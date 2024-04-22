@@ -4,7 +4,7 @@
 {% block maincontent %}
     <div class="post">
         <i class="bi bi-person-circle"></i>
-        <span> jinja variable </span>
+        <span> {{ current_user }} </span>
         <form action="/user-post" method="post">
             <div class="post-text-btn">
                 <textarea name="post-content" id="textpostarea" placeholder="Type here" maxlength="255"></textarea>
@@ -14,6 +14,7 @@
         </form>
     </div>
     {% for post in all_posts %}
+        
         <div class="post">
             <div class="post-header">
                 <i class="bi bi-person-circle"></i>
@@ -21,6 +22,7 @@
                 <p class="post-date">{{ post.datetime_post }}</p>
             </div>
             <div class="post-area">
+                <a href="/posts/{{ post.post_id }}" class="click-post">Click here to view the post</a>
                 <!-- <h3 class="post-title">{{ post.title }}</h3> -->
                 <p id="post-content">
                     {{ post.post_content }}

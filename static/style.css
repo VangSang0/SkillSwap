@@ -218,6 +218,14 @@ footer{
     color: gray;
 }
 
+.click-post{
+    text-decoration: none;
+    color: black;
+}
+.click-post:hover{
+    text-decoration: underline;
+}
+
 
 
 /* For alert message */

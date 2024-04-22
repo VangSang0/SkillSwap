@@ -90,15 +90,15 @@ def get_user_by_id(user_id: int) -> dict[str, Any] | None:
 
 
 
-def add_post(user_id: int, post_content: str):
+def add_post(post_author_id: int, post_content: str):
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute('''
-                            INSERT INTO Posts (user_id, content)
+                            INSERT INTO Posts (post_author_id, post_content)
                             VALUES (%s, %s)
                             RETURNING post_id
-                            ''', [user_id, post_content])
+                            ''', [post_author_id, post_content])
             post_id = cursor.fetchone()
             if post_id is None:
                 raise Exception('Post not created')
@@ -137,14 +137,18 @@ def get_post_by_id(post_id: int):
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
                             SELECT 
-                                post_id, 
-                                post_author_id,
-                                num_likes,
-                                num_comments,
-                                datetime_post,
-                                post_content
+                                Posts.post_id, 
+                                Users.username AS author,
+                                Posts.num_likes,
+                                Posts.num_comments,
+                                Posts.datetime_post,
+                                Posts.post_content
                             FROM 
                                 Posts
+                            JOIN
+                                Users
+                            ON
+                                Posts.post_author_id = Users.user_id
                             WHERE
                                 post_id = %s
                             ''', [post_id])

@@ -12,25 +12,7 @@ bcrypt = Bcrypt(app)
 app.secret_key= os.getenv('SECRET_KEY')
 
 
-# Dummy Data
-posts = [
-    {
 
-        'author' : 'Sangy Vangy',
-        'title' : 'Post 1',
-        'content' : 'This is for test purposes only',
-        'date_posted' : 'July 3, 2024'
-
-    },
-    {
-
-        'author' : 'John Doe',
-        'title' : 'Happy Independence Day!',
-        'content' : 'Today we are outside prepping for the fireworks show but I was wondering if there was a way to make this into a program. Any thoughts?',
-        'date_posted' : 'July 4, 2024'
-
-    },
-]
 
 @app.get('/')
 def sign_in():
@@ -124,7 +106,12 @@ def logout():
 def home_page():
     all_posts = database_methods.get_all_posts()
     random.shuffle(all_posts)
-    return render_template('home_page.html', all_posts=all_posts)
+    for post in all_posts:
+        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+    
+    current_user = database_methods.get_user_by_id(session['user_id'])['username']
+
+    return render_template('home_page.html', all_posts=all_posts, current_user=current_user)
 
 
 @app.get('/profile-page')
@@ -146,23 +133,24 @@ def friends():
 @app.post('/user-post')
 @other_methods.check_user
 def user_post():
-    post_user = database_methods.get_user_by_id(session['user_id'])['username']
-    print(post_user)
+    post_author_id = database_methods.get_user_by_id(session['user_id'])['user_id']
+    print(post_author_id)
     post_content = request.form.get('post-content')
-
-    #Place holder for the post just because we haven't approved user authentication
-    post = {
-        'author' : post_user,
-        'content' : post_content,
-        'date_posted' : 'July 4, 2024'
-    }
-    posts.append(post)
-    post_id = database_methods.add_post(post_user, post_content)
+    print(post_content)
+    post_id = database_methods.add_post(post_author_id, post_content)
     if post_id is None:
-        flash("Post was unsuccessful, please try again later")
+        print("Post not added")
 
     return redirect(url_for('home_page'))
 
+@app.get('/posts/<int:post_id>')
+@other_methods.check_user
+def post(post_id):
+    post = database_methods.get_post_by_id(post_id)
+    if post is None:
+        abort(404)
+    post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+    return render_template('posts.html', post=post)
 
 @app.get('/settings-page')
 @other_methods.check_user
