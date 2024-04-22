@@ -1,0 +1,49 @@
+{% extends "_layout.html" %}
+
+
+{% block maincontent %}
+    <div class="post">
+        <i class="bi bi-person-circle"></i>
+        <span> jinja variable </span>
+        <div class="post-text-btn">
+            <textarea id="textpostarea" placeholder="Type here"></textarea>
+            <button type="button" class="btn btn-primary btn-sm" id="post-button">Post</button>
+        </div>
+    </div>
+    {% for post in posts %}
+        <div class="post">
+            <div class="post-header">
+                <i class="bi bi-person-circle"></i>
+                <h6 class="poster">{{ post.author }}</h6>
+                <p class="post-date">{{ post.date_posted }}</p>
+            </div>
+            <div class="post-area">
+                <h3 class="post-title">{{ post.title }}</h3>
+                <p id="post-content">
+                    {{ post.content }}
+                </p>
+                <div class="post-btns">
+                    <i class="bi bi-heart"></i>
+                    <i class="bi bi-chat-square-text"></i>
+                    <i class="bi bi-share"></i>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+
+{% block rightcontent %}
+    <div class="recomm-container">
+        <div class="recomm-user">
+            <i class="bi bi-person-circle"></i>
+            <span>username</span>
+        </div>
+        <div class="recomm-text">
+            <p class="recomm-content">Grade Year: jinja variable</p>
+            <p class="recomm-content">Concentration: jinja variable</p>
+            <p class="recomm-content">Completed: jinja variable</p>
+            <p class="recomm-content">Enrolled: jinja variable</p>
+        </div>    
+    </div>
+{% endblock %}

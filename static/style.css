@@ -1,0 +1,227 @@
+
+:root{
+    --sidepanes: rgb(243,249,250);
+    --overallgray: rgb(238,235,235);
+    --websiteblue: rgb(52,119,141);
+    --pfpgray: rgb(217,217,217);
+    --darkgray:rgb(194,194,194);
+}
+
+.navbar{
+    outline: solid;
+    width: 100%;
+    margin:0;
+    background-color:black;
+    display: flex;
+    flex-direction: row;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.logo p{
+    margin: 0;
+    font-size: 25px;
+    font-weight: 600;
+    color: white;
+}
+
+#searchbar{
+    border-radius: 10px;
+    padding:5px;
+    border:none;
+    width: 600px;
+}
+
+#nav-pfp{
+    color: white;
+    font-size: 30px;
+}
+
+/* _____________________________________________________________ */
+
+.main-body{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+.main-nav{
+    padding: 30px;
+    width: 25%;
+    background-color: var(--sidepanes);
+    color: black;
+}
+.main-nav a{
+    color: black;
+}
+.side-tabs{
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    padding-top: 20px;
+}
+
+.main-cont{
+    width: 55%;
+}
+
+.main-recomm{
+    width: 20%;
+    background-color: var(--sidepanes);
+
+}
+
+.post{
+    background-color: var(--overallgray);
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px;
+}
+
+#textpostarea{
+    border-radius: 10px;
+    border: none;
+    margin: 7px;
+    width: 700px;
+    height: 100px;
+}
+
+.post-text-btn{
+    display: flex;
+    flex-direction: row;
+    align-items:end;
+}
+
+#post-button{
+    background-color: var(--websiteblue);
+    height: 30px;
+    width:70px;
+    margin-bottom: 10px;
+}
+
+#post-content{
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.post-btns{
+    font-size: 20px;
+    margin-right: 620px;
+    margin-left: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.recomm-container{
+    background-color: var(--pfpgray);
+    margin:20px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+}
+
+.recomm-user{
+    background-color: var(--darkgray);
+    padding: 10px;
+}
+
+.recomm-text{
+    margin: 10px;
+}
+
+.recomm-content{
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* _________________________________________________________ */
+
+footer{
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Styling for the sign up page */
+.signup {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.signup-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 300px;
+}
+.signup-container h2 {
+    text-align: center;
+}
+.signing-up {
+    display: flex;
+    flex-direction: column;
+}
+.signup-container input[type="text"], .signup-container input[type="password"], .signup-container input[type="email"], .signup-container input[type="confirm-password"] {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+.sign-up {
+    background-color: #0079d3;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.sign-up:hover {
+    background-color: #0056a3;
+}
+
+/* for the posts */
+
+.post-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    padding: 0.25rem;
+}
+
+.post-header i {
+    margin-right: 0.5rem;
+}
+
+.poster{
+    margin: 0;
+    font-weight: bold;
+    padding-bottom: 0.25rem;
+    margin-right: auto;
+}
+
+.post-date{
+    font-size: 0.75rem;
+    color: gray;
+}
+
+
+
+/* For alert message */
+.alert-message {
+    color: red;
+    font-size: 0.75rem;
+}
