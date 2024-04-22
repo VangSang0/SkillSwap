@@ -17,25 +17,25 @@ CREATE TABLE IF NOT EXISTS Users(
 
 CREATE TABLE IF NOT EXISTS Posts(
     post_id         SERIAL,
-    author_id       VARCHAR(225)    NOT NULL,
+    post_author_id  VARCHAR(225)    NOT NULL,
     num_likes       INTEGER,    
     num_comments    INTEGER,
     datetime_post   DATETIME
     post_conent     VARCHAR(255)    NOT NULL,
 
-    PRIMARY KEY(post_id);
-    FOREIGN KEY author_id REFERENCES Users(user_id)
+    PRIMARY KEY(post_id),
+    FOREIGN KEY post_author_id REFERENCES Users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Comments(
     comment_id      SERIAL,
-    comm_author_id  INTEGER    NOT NULL,
+    comment_author_id  INTEGER    NOT NULL,
     post_id         INTEGER    NOT NULL,
     datetime_posted DATETIME,
     content         VARCHAR(255)    NOT NULL,
 
     PRIMARY KEY(comment_id),
-    FOREIGN KEY comm_author_id REFERENCES Users(user_id),
+    FOREIGN KEY comment_author_id REFERENCES Users(user_id),
     FOREIGN KEY post_id REFERENCES Posts(post_id)
 
 );
@@ -49,11 +49,12 @@ CREATE TABLE IF NOT EXISTS Courses(
     PRIMARY KEY(course_id)
 );
 
-CREATE TABLE IF NOT EXISTS Friends(
-    friend_user_id       SERIAL    NOT NULL,
-    user_id              SERIAL    NOT NULL,
+CREATE TABLE IF NOT EXISTS User_Friends(
+    user_id              INTEGER    NOT NULL,
+    friend_user_id       INTEGER    NOT NULL,
 
-    PRIMARY KEY(friend_user_id),
+
+    PRIMARY KEY(user_id, friend_user_id),
     FOREIGN KEY user_id REFERENCES Users(user_id)
     );
 
