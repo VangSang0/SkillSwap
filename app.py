@@ -137,5 +137,6 @@ def friends():
     return render_template('friends_page.html')
 
 @app.get('/settings-page')
+@other_methods.check_user
 def settings():
     return render_template('settings_page.html')
