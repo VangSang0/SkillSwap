@@ -10,6 +10,11 @@ app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.secret_key= os.getenv('SECRET_KEY')
 
+friend_list = [
+    {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
+    {"name": "Emma Johnson", "occupation": "Model at Fashion", "distance": "800m away"},
+    {"name": "Nora Wilson", "occupation": "Writer at Newspaper", "distance": "2.5km away"},
+]
 
 # Dummy Data
 posts = [
@@ -32,6 +37,13 @@ posts = [
 ]
 
 @app.get('/')
+# def home():
+#     return render_template('index.html')
+
+# @app.get('/friends')
+# def friends():
+#     return render_template('friendsPage.html', friend_list=friend_list)
+
 def sign_in():
 
     return render_template('sign_in.html')
@@ -62,12 +74,14 @@ def sign_up_tab():
 def signing_up():
 
     user_email = request.form.get('email')
+    first_name = request.form.get('first-name')
+    last_name = request.form.get('last-name')
     username = request.form.get('username')
     password = request.form.get('password')
     confirm_password = request.form.get('confirm-password')
 
     # Validation section
-    if not username or not password or not user_email:
+    if not username or not password or not user_email or not confirm_password or not first_name or not last_name:
         flash("Please enter all required fields")
         return redirect(url_for('sign_up_tab'))  
 
@@ -101,7 +115,7 @@ def signing_up():
         return redirect(url_for('sign_up_tab'))
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = database_methods.create_user(user_email, username, hashed_password)
+    new_user = database_methods.create_user(first_name, last_name, user_email, username, hashed_password)
 
     flash(f"Account created successfully {new_user['username']}! Please sign in to continue.")
 
@@ -134,9 +148,10 @@ def profile():
 def friends():
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
-    return render_template('friends_page.html')
+    return render_template('friends_page.html', )
 
 @app.get('/settings-page')
 @other_methods.check_user
 def settings():
-    return render_template('settings_page.html')
+    return render_template('settings_page.html', friend_list=friend_list)
+
