@@ -152,6 +152,18 @@ def post(post_id):
     post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     return render_template('posts.html', post=post)
 
+# PLEASE WORK ON THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+@app.post('/delete-post/<int:post_id>')
+@other_methods.check_user
+def delete_post(post_id):
+    post = database_methods.get_post_by_id(post_id)
+    if post is None:
+        abort(404)
+    if post['post_author_id'] != session['user_id']:
+        abort(403)
+    database_methods.delete_post(post_id)
+    return redirect(url_for('home_page'))
+
 @app.get('/settings-page')
 @other_methods.check_user
 def settings():

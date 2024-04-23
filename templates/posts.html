@@ -19,6 +19,19 @@
             </div>
         </div>
     </div>
+    <div class="user-comment">
+        <i class="bi bi-person-circle"></i>
+        <span> {{ current_user }} </span>
+        <form action="/user-comment" method="post">
+            <div class="comment-text-btn">
+                <textarea name="comment-content" id="textcommentarea" placeholder="Type here" maxlength="255"></textarea>
+                <span id="char-count">255 characters remaining</span>
+                <button type="submit" class="btn btn-primary btn-sm" id="comment-button">Comment</button>
+            </div>
+    </div>
+    <div class="comments">
+
+    </div>
 
 
 {% endblock %}
