@@ -37,14 +37,13 @@ posts = [
 ]
 
 @app.get('/')
-<<<<<<< HEAD
-def home():
-    return render_template('index.html')
+# def home():
+#     return render_template('index.html')
 
-@app.get('/friends')
-def friends():
-    return render_template('friendsPage.html', friend_list=friend_list)
-=======
+# @app.get('/friends')
+# def friends():
+#     return render_template('friendsPage.html', friend_list=friend_list)
+
 def sign_in():
 
     return render_template('sign_in.html')
@@ -149,10 +148,10 @@ def profile():
 def friends():
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
-    return render_template('friends_page.html')
+    return render_template('friends_page.html', )
 
 @app.get('/settings-page')
 @other_methods.check_user
 def settings():
-    return render_template('settings_page.html')
->>>>>>> main
+    return render_template('settings_page.html', friend_list=friend_list)
+
