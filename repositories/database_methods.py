@@ -112,7 +112,8 @@ def get_all_posts():
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
                             SELECT 
-                                Posts.post_id, 
+                                Posts.post_id,
+                                Posts.post_author_id,
                                 Users.username AS author,
                                 Posts.num_likes,
                                 Posts.num_comments,
@@ -138,6 +139,7 @@ def get_post_by_id(post_id: int):
             cursor.execute('''
                             SELECT 
                                 Posts.post_id, 
+                                Posts.post_author_id,
                                 Users.username AS author,
                                 Posts.num_likes,
                                 Posts.num_comments,
@@ -154,3 +156,41 @@ def get_post_by_id(post_id: int):
                             ''', [post_id])
             post = cursor.fetchone()
             return post
+
+def get_posts_by_user_id(user_id: int):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                Posts.post_id, 
+                                Users.username AS author,
+                                Posts.num_likes,
+                                Posts.num_comments,
+                                Posts.datetime_post,
+                                Posts.post_content
+                            FROM 
+                                Posts
+                            JOIN
+                                Users
+                            ON
+                                Posts.post_author_id = Users.user_id
+                            WHERE
+                                post_author_id = %s
+                            ORDER BY 
+                                datetime_post ASC
+                            ''', [user_id])
+            posts = cursor.fetchall()
+            return posts
+        
+def delete_post(post_id: int) -> bool:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            DELETE FROM 
+                                Posts
+                            WHERE
+                                post_id = %s
+                            ''', [post_id])
+            # what can I return here?

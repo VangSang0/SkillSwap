@@ -1,0 +1,29 @@
+{% extends '_layout.html' %}
+
+{% block maincontent %}
+    <h1>Posts by {{ user.username }}</h1>
+
+    {% for post in user_posts %}
+        
+        <div class="post">
+            <div class="post-header">
+                <i class="bi bi-person-circle"></i>
+                <h6 class="poster">{{ post.author }}</h6>
+                <p class="post-date">{{ post.datetime_post }}</p>
+            </div>
+            <div class="post-area">
+                <a href="/posts/{{ post.post_id }}" class="click-post">Click here to view the post</a>
+                <!-- <h3 class="post-title">{{ post.title }}</h3> -->
+                <p id="post-content">
+                    {{ post.post_content }}
+                </p>
+                <div class="post-btns">
+                    <i class="bi bi-heart"></i>
+                    <i class="bi bi-chat-square-text"></i>
+                    <i class="bi bi-share"></i>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

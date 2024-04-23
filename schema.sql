@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS Users(
     last_name       VARCHAR(225)    NOT NULL,   
     email           VARCHAR(225)    NOT NULL UNIQUE, 
     username        VARCHAR(225)    NOT NULL UNIQUE,  
-    is_TA           BOOLEAN         NOT NULL,
-    hash_pass       VARCHAR(225)    NOT NULL,   
+    is_TA           BOOLEAN         NOT NULL DEFAULT FALSE,
+    hash_pass       VARCHAR(225)    NOT NULL DEFAULT 'none',   
     concentration   VARCHAR(255),
 
     PRIMARY KEY(user_id)
@@ -21,10 +21,10 @@ CREATE TABLE IF NOT EXISTS Users(
 CREATE TABLE IF NOT EXISTS Posts(
     post_id         SERIAL,
     post_author_id  INTEGER         NOT NULL,
-    num_likes       INTEGER,    
-    num_comments    INTEGER,
+    num_likes       INTEGER         DEFAULT 0,    
+    num_comments    INTEGER         DEFAULT 0,
     datetime_post   TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
-    post_conent     VARCHAR(255)    NOT NULL,
+    post_content     VARCHAR(255)    NOT NULL,
 
     PRIMARY KEY (post_id),
     FOREIGN KEY (post_author_id) REFERENCES Users(user_id)

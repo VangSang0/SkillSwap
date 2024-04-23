@@ -109,7 +109,7 @@ def home_page():
     for post in all_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     
-    current_user = database_methods.get_user_by_id(session['user_id'])['username']
+    current_user = database_methods.get_user_by_id(session['user_id'])
 
     return render_template('home_page.html', all_posts=all_posts, current_user=current_user)
 
@@ -152,17 +152,44 @@ def post(post_id):
     post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     return render_template('posts.html', post=post)
 
-# PLEASE WORK ON THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-@app.post('/delete-post/<int:post_id>')
+
+@app.post('/delete-post')
 @other_methods.check_user
-def delete_post(post_id):
+def delete_post():
+    post_id = request.form.get('delete')
+    post = database_methods.get_post_by_id(post_id)
+    
+    print(post_id)
+    print(post)
+    if post is None:
+        flash('There is no post with that ID')
+    if post['post_author_id'] != session['user_id']:
+        flash("You are not authorized to delete this post")
+        return redirect(url_for('home_page'))
+    
+    database_methods.delete_post(post_id)
+    return redirect(url_for('home_page'))
+
+
+@app.get('/edit-post/<int:post_id>')
+@other_methods.check_user
+def edit_post(post_id):
     post = database_methods.get_post_by_id(post_id)
     if post is None:
         abort(404)
     if post['post_author_id'] != session['user_id']:
         abort(403)
-    database_methods.delete_post(post_id)
-    return redirect(url_for('home_page'))
+    return render_template('edit_post.html', post=post)
+
+@app.get('/user-posts')
+@other_methods.check_user
+def user_posts():
+    user_id = session['user_id']
+    user = database_methods.get_user_by_id(user_id)
+    user_posts = database_methods.get_posts_by_user_id(user_id)
+    for post in user_posts:
+        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+    return render_template('users_posts.html', user=user, user_posts=user_posts)
 
 @app.get('/settings-page')
 @other_methods.check_user
