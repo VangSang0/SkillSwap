@@ -134,9 +134,7 @@ def friends():
 @other_methods.check_user
 def user_post():
     post_author_id = database_methods.get_user_by_id(session['user_id'])['user_id']
-    print(post_author_id)
     post_content = request.form.get('post-content')
-    print(post_content)
     post_id = database_methods.add_post(post_author_id, post_content)
     if post_id is None:
         print("Post not added")
@@ -181,11 +179,12 @@ def edit_post(post_id):
         abort(403)
     return render_template('edit_post.html', post=post)
 
-@app.get('/user-posts')
+@app.get('/users-posts')
 @other_methods.check_user
 def user_posts():
     user_id = session['user_id']
     user = database_methods.get_user_by_id(user_id)
+    print(user)
     user_posts = database_methods.get_posts_by_user_id(user_id)
     for post in user_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])

@@ -164,6 +164,7 @@ def get_posts_by_user_id(user_id: int):
             cursor.execute('''
                             SELECT 
                                 Posts.post_id, 
+                                Posts.post_author_id,
                                 Users.username AS author,
                                 Posts.num_likes,
                                 Posts.num_comments,
