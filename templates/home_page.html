@@ -4,27 +4,52 @@
 {% block maincontent %}
     <div class="post">
         <i class="bi bi-person-circle"></i>
-        <span> jinja variable </span>
-        <div class="post-text-btn">
-            <textarea id="textpostarea" placeholder="Type here"></textarea>
-            <button type="button" class="btn btn-primary btn-sm" id="post-button">Post</button>
-        </div>
+        <span> {{ current_user.username }} </span>
+        {% for message in get_flashed_messages() %}
+                {% if "Please" in message or "Post" in message %}
+                    <div class="alert alert-warning alert-dismissible fade show alert-message" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                {% endif %}
+            {% endfor %}
+        <form action="/user-post" method="post">
+            <div class="post-text-btn">
+                <textarea name="post-content" id="textpostarea" placeholder="Type here" maxlength="255"></textarea>
+                <span id="char-count">255 characters remaining</span>
+                <button type="submit" class="btn btn-primary btn-sm" id="post-button">Post</button>
+            </div>
+        </form>
     </div>
-    {% for post in posts %}
+    {% for post in all_posts %}
+        
         <div class="post">
             <div class="post-header">
                 <i class="bi bi-person-circle"></i>
                 <h6 class="poster">{{ post.author }}</h6>
-                <p class="post-date">{{ post.date_posted }}</p>
+                <p class="post-date">{{ post.datetime_post }}</p>
+                {% if post.post_author_id == current_user.user_id %}
+                    <form action="/edit-post/{{ post.post_id }}" method="get">
+                        <input type="hidden" name="post_id" value="{{ post.post_id }}">
+                        <button type="submit" class="btn btn-danger btn-sm" id="delete-button">Edit</button>
+                    </form>
+                    <form action="/delete-post" method="post">
+                        <button name="delete" type="submit" class="btn btn-danger btn-sm" id="delete-button" value="{{ post.post_id }}" >Delete</button>
+                    </form>
+                {% endif %}
             </div>
             <div class="post-area">
-                <h3 class="post-title">{{ post.title }}</h3>
+                <a href="/posts/{{ post.post_id }}" class="click-post">Click here to view the post</a>
+                <!-- <h3 class="post-title">{{ post.title }}</h3> -->
                 <p id="post-content">
-                    {{ post.content }}
+                    {{ post.post_content }}
                 </p>
                 <div class="post-btns">
                     <i class="bi bi-heart"></i>
+                    <p>{{ post.num_likes }}</p>
                     <i class="bi bi-chat-square-text"></i>
+                    <p>{{ post.num_comments }}</p>
                     <i class="bi bi-share"></i>
                 </div>
             </div>
