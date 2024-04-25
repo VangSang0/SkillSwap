@@ -233,3 +233,9 @@ footer{
     color: red;
     font-size: 0.75rem;
 }
+
+/* For the edit_post page */
+.edit-post-disclaimer p{
+    font-size: 0.75rem;
+    color: gray;
+}

@@ -5,6 +5,15 @@
     <div class="post">
         <i class="bi bi-person-circle"></i>
         <span> {{ current_user.username }} </span>
+        {% for message in get_flashed_messages() %}
+                {% if "Please" in message or "Post" in message %}
+                    <div class="alert alert-warning alert-dismissible fade show alert-message" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                {% endif %}
+            {% endfor %}
         <form action="/user-post" method="post">
             <div class="post-text-btn">
                 <textarea name="post-content" id="textpostarea" placeholder="Type here" maxlength="255"></textarea>
@@ -38,7 +47,9 @@
                 </p>
                 <div class="post-btns">
                     <i class="bi bi-heart"></i>
+                    <p>{{ post.num_likes }}</p>
                     <i class="bi bi-chat-square-text"></i>
+                    <p>{{ post.num_comments }}</p>
                     <i class="bi bi-share"></i>
                 </div>
             </div>

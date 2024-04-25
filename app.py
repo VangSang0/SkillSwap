@@ -135,9 +135,13 @@ def friends():
 def user_post():
     post_author_id = database_methods.get_user_by_id(session['user_id'])['user_id']
     post_content = request.form.get('post-content')
+    if post_content.strip() == "" or not post_content:
+        flash("Please enter post content")
+        return redirect(url_for('home_page'))
     post_id = database_methods.add_post(post_author_id, post_content)
     if post_id is None:
-        print("Post not added")
+        flash("Post not added")
+        return redirect(url_for('home_page'))
 
     return redirect(url_for('home_page'))
 
@@ -157,8 +161,6 @@ def delete_post():
     post_id = request.form.get('delete')
     post = database_methods.get_post_by_id(post_id)
     
-    print(post_id)
-    print(post)
     if post is None:
         flash('There is no post with that ID')
     if post['post_author_id'] != session['user_id']:
@@ -168,23 +170,60 @@ def delete_post():
     database_methods.delete_post(post_id)
     return redirect(url_for('home_page'))
 
+@app.post('/delete-post-from-myposts')
+@other_methods.check_user
+def delete_post_from_myposts():
+    post_id = request.form.get('delete')
+    post = database_methods.get_post_by_id(post_id)
+    
+    if post is None:
+        flash('There is no post with that ID')
+        return redirect(url_for('user_posts'))
+    if post['post_author_id'] != session['user_id']:
+        flash("You are not authorized to delete this post")
+        return redirect(url_for('home_page'))
+    
+    database_methods.delete_post(post_id)
+    return redirect(url_for('user_posts'))
+
 
 @app.get('/edit-post/<int:post_id>')
 @other_methods.check_user
 def edit_post(post_id):
+    user = database_methods.get_user_by_id(session['user_id'])
     post = database_methods.get_post_by_id(post_id)
     if post is None:
-        abort(404)
+        flash("There is no post with that ID")
+        return redirect(url_for('home_page'))
     if post['post_author_id'] != session['user_id']:
-        abort(403)
-    return render_template('edit_post.html', post=post)
+        flash("You are not authorized to edit this post")
+        return redirect(url_for('home_page'))
+    post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+    return render_template('edit_post.html', user=user, post=post)
+
+@app.post('/edit-post')
+@other_methods.check_user
+def edit_post_submit():
+    post_content = request.form.get('post-content')
+    post_id = request.form.get('post_id')
+    if post_content.strip() == "" or not post_content:
+        flash("Please enter post content")
+        return redirect(url_for('edit_post', post_id=post_id))
+    post = database_methods.get_post_by_id(post_id)
+    if post is None:
+        flash("There is no post with that ID")
+        return redirect(url_for('home_page'))
+    if post['post_author_id'] != session['user_id']:
+        flash("You are not authorized to edit this post")
+        return redirect(url_for('home_page'))
+    database_methods.edit_post(post_id, post_content)
+    return redirect(url_for('home_page'))
 
 @app.get('/users-posts')
 @other_methods.check_user
 def user_posts():
     user_id = session['user_id']
     user = database_methods.get_user_by_id(user_id)
-    print(user)
     user_posts = database_methods.get_posts_by_user_id(user_id)
     for post in user_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])

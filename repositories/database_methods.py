@@ -195,3 +195,18 @@ def delete_post(post_id: int) -> bool:
                                 post_id = %s
                             ''', [post_id])
             # what can I return here?
+
+
+def edit_post(post_id: int, post_content: str) -> bool:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            UPDATE 
+                                Posts
+                            SET
+                                post_content = %s
+                            WHERE
+                                post_id = %s
+                            ''', [post_content, post_id])
+            # what can I return here?
