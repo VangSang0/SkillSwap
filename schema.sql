@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS Users(
     hash_pass       VARCHAR(225)    NOT NULL,   
     concentration   VARCHAR(255)    DEFAULT 'None',
 
-
     PRIMARY KEY(user_id)
 );
 

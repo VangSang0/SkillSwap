@@ -1,5 +1,4 @@
 import os, re
-import random
 from dotenv import load_dotenv
 from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods, other_methods
@@ -17,7 +16,25 @@ friend_list = [
     {"name": "Nora Wilson", "occupation": "Writer at Newspaper", "distance": "2.5km away"},
 ]
 
+# Dummy Data
+posts = [
+    {
 
+        'author' : 'Sangy Vangy',
+        'title' : 'Post 1',
+        'content' : 'This is for test purposes only',
+        'date_posted' : 'July 3, 2024'
+
+    },
+    {
+
+        'author' : 'John Doe',
+        'title' : 'Happy Independence Day!',
+        'content' : 'Today we are outside prepping for the fireworks show but I was wondering if there was a way to make this into a program. Any thoughts?',
+        'date_posted' : 'July 4, 2024'
+
+    },
+]
 
 @app.get('/')
 def sign_in():
@@ -109,14 +126,7 @@ def logout():
 @app.get('/home-page')
 @other_methods.check_user # This is a decorator that checks if the user is signed in
 def home_page():
-    all_posts = database_methods.get_all_posts()
-    random.shuffle(all_posts)
-    for post in all_posts:
-        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    
-    current_user = database_methods.get_user_by_id(session['user_id'])
-
-    return render_template('home_page.html', all_posts=all_posts, current_user=current_user)
+    return render_template('home_page.html', posts=posts)
 
 
 @app.get('/profile-page')
@@ -132,107 +142,6 @@ def friends():
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
     return render_template('friends_page.html',friend_list=friend_list )
-
-
-
-@app.post('/user-post')
-@other_methods.check_user
-def user_post():
-    post_author_id = database_methods.get_user_by_id(session['user_id'])['user_id']
-    post_content = request.form.get('post-content')
-    if post_content.strip() == "" or not post_content:
-        flash("Please enter post content")
-        return redirect(url_for('home_page'))
-    post_id = database_methods.add_post(post_author_id, post_content)
-    if post_id is None:
-        flash("Post not added")
-        return redirect(url_for('home_page'))
-
-    return redirect(url_for('home_page'))
-
-@app.get('/posts/<int:post_id>')
-@other_methods.check_user
-def post(post_id):
-    post = database_methods.get_post_by_id(post_id)
-    if post is None:
-        abort(404)
-    post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    return render_template('posts.html', post=post)
-
-
-@app.post('/delete-post')
-@other_methods.check_user
-def delete_post():
-    post_id = request.form.get('delete')
-    post = database_methods.get_post_by_id(post_id)
-    
-    if post is None:
-        flash('There is no post with that ID')
-    if post['post_author_id'] != session['user_id']:
-        flash("You are not authorized to delete this post")
-        return redirect(url_for('home_page'))
-    
-    database_methods.delete_post(post_id)
-    return redirect(url_for('home_page'))
-
-@app.post('/delete-post-from-myposts')
-@other_methods.check_user
-def delete_post_from_myposts():
-    post_id = request.form.get('delete')
-    post = database_methods.get_post_by_id(post_id)
-    
-    if post is None:
-        flash('There is no post with that ID')
-        return redirect(url_for('user_posts'))
-    if post['post_author_id'] != session['user_id']:
-        flash("You are not authorized to delete this post")
-        return redirect(url_for('home_page'))
-    
-    database_methods.delete_post(post_id)
-    return redirect(url_for('user_posts'))
-
-
-@app.get('/edit-post/<int:post_id>')
-@other_methods.check_user
-def edit_post(post_id):
-    user = database_methods.get_user_by_id(session['user_id'])
-    post = database_methods.get_post_by_id(post_id)
-    if post is None:
-        flash("There is no post with that ID")
-        return redirect(url_for('home_page'))
-    if post['post_author_id'] != session['user_id']:
-        flash("You are not authorized to edit this post")
-        return redirect(url_for('home_page'))
-    post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    return render_template('edit_post.html', user=user, post=post)
-
-@app.post('/edit-post')
-@other_methods.check_user
-def edit_post_submit():
-    post_content = request.form.get('post-content')
-    post_id = request.form.get('post_id')
-    if post_content.strip() == "" or not post_content:
-        flash("Please enter post content")
-        return redirect(url_for('edit_post', post_id=post_id))
-    post = database_methods.get_post_by_id(post_id)
-    if post is None:
-        flash("There is no post with that ID")
-        return redirect(url_for('home_page'))
-    if post['post_author_id'] != session['user_id']:
-        flash("You are not authorized to edit this post")
-        return redirect(url_for('home_page'))
-    database_methods.edit_post(post_id, post_content)
-    return redirect(url_for('home_page'))
-
-@app.get('/users-posts')
-@other_methods.check_user
-def user_posts():
-    user_id = session['user_id']
-    user = database_methods.get_user_by_id(user_id)
-    user_posts = database_methods.get_posts_by_user_id(user_id)
-    for post in user_posts:
-        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    return render_template('users_posts.html', user=user, user_posts=user_posts)
 
 @app.get('/settings-page')
 @other_methods.check_user
