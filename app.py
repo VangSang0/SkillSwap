@@ -287,11 +287,8 @@ def edit_comment(post_id, comment_id):
 @app.post('/confirm-edit-comment')
 def confirm_edit_comment():
     comment_id = request.form.get('comment_id')
-    print(comment_id)
     post_id = request.form.get('post_id')
-    print(post_id)
     comment_content = request.form.get('comment-content')
-    print(comment_content)
     if comment_content.strip() == "" or not comment_content:
         flash("Please enter comment content")
         return redirect(url_for('edit_comment', post_id=post_id, comment_id=comment_id))
