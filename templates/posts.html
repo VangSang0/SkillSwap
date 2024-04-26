@@ -1,0 +1,39 @@
+{% extends "_layout.html" %}
+
+{% block maincontent %}
+    <div class="post">
+        <div class="post-header">
+            <i class="bi bi-person-circle"></i>
+            <h6 class="poster">{{ post.author }}</h6>
+            <p class="post-date">{{ post.datetime_post }}</p>
+        </div>
+        <div class="post-area">
+            <!-- <h3 class="post-title">{{ post.title }}</h3> -->
+            <p id="post-content">
+                {{ post.post_content }}
+            </p>
+            <div class="post-btns">
+                <i class="bi bi-heart"></i>
+                <p>{{ post.num_likes }}</p>
+                <i class="bi bi-chat-square-text"></i>
+                <p>{{ post.num_comments }}</p>
+                <i class="bi bi-share"></i>
+            </div>
+        </div>
+    </div>
+    <div class="user-comment">
+        <i class="bi bi-person-circle"></i>
+        <span> {{ current_user }} </span>
+        <form action="/user-comment" method="post">
+            <div class="comment-text-btn">
+                <textarea name="comment-content" id="textcommentarea" placeholder="Type here" maxlength="255"></textarea>
+                <span id="char-count">255 characters remaining</span>
+                <button type="submit" class="btn btn-primary btn-sm" id="comment-button">Comment</button>
+            </div>
+    </div>
+    <div class="comments">
+
+    </div>
+
+
+{% endblock %}
