@@ -153,11 +153,15 @@ def user_post():
 @app.get('/posts/<int:post_id>')
 @other_methods.check_user
 def post(post_id):
+    current_user = database_methods.get_user_by_id(session['user_id'])
     post = database_methods.get_post_by_id(post_id)
-    if post is None:
+    comments = database_methods.get_comments_by_post_id(post_id)
+    if post is None or not post:
         abort(404)
     post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    return render_template('posts.html', post=post)
+    for comment in comments:
+        comment['datetime_posted'] = other_methods.format_datetime(comment['datetime_posted'])
+    return render_template('posts.html', post=post, comments=comments, current_user=current_user)
 
 
 @app.post('/delete-post')
@@ -233,6 +237,70 @@ def user_posts():
     for post in user_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     return render_template('users_posts.html', user=user, user_posts=user_posts)
+
+@app.post('/comment')
+@other_methods.check_user
+def make_comment():
+    post_id = request.form.get('post_id')
+    comment_content = request.form.get('comment-content')
+    author_id = session['user_id']
+    if comment_content.strip() == "" or not comment_content:
+        flash("Please enter comment content")
+        return redirect(url_for('post', post_id=post_id))
+    comment_id = database_methods.add_comment(author_id, post_id, comment_content)
+    if comment_id is None:
+        flash("Comment not added")
+        return redirect(url_for('post', post_id=post_id))
+    return redirect(url_for('post', post_id=post_id))
+
+@app.post('/delete-comment')
+@other_methods.check_user
+def delete_comment():
+    post_id = request.form.get('post_id')
+    comment_id = request.form.get('delete')
+    comment = database_methods.get_comment_by_id(comment_id)
+    if comment is None:
+        flash('There is no comment with that ID')
+        return redirect(url_for('post', post_id=post_id))
+    if comment['comment_author_id'] != session['user_id']:
+        flash("You are not authorized to delete this comment")
+        return redirect(url_for('post', post_id=post_id))
+    database_methods.delete_comment(comment_id)
+    return redirect(url_for('post', post_id=post_id))
+
+@app.get('/edit-comment/<int:post_id>/<int:comment_id>')
+@other_methods.check_user
+def edit_comment(post_id, comment_id):
+    current_user = database_methods.get_user_by_id(session['user_id'])
+    current_comment = database_methods.get_comment_by_id(comment_id)
+    post = database_methods.get_post_by_id(post_id)
+    # if post is None:
+    #     return redirect(url_for('error_page'))
+    if current_comment is None:
+        flash("There is no comment with that ID")
+        return redirect(url_for('post', post_id=post_id))
+    if current_comment['comment_author_id'] != session['user_id']:
+        flash("You are not authorized to edit this comment")
+        return redirect(url_for('post', post_id=post_id))
+    return render_template('edit_comment.html', current_user=current_user , post=post, current_comment=current_comment, post_id=post_id)
+
+@app.post('/confirm-edit-comment')
+def confirm_edit_comment():
+    comment_id = request.form.get('comment_id')
+    print(comment_id)
+    post_id = request.form.get('post_id')
+    print(post_id)
+    comment_content = request.form.get('comment-content')
+    print(comment_content)
+    if comment_content.strip() == "" or not comment_content:
+        flash("Please enter comment content")
+        return redirect(url_for('edit_comment', post_id=post_id, comment_id=comment_id))
+    comment = database_methods.get_comment_by_id(comment_id)
+    if comment['comment_author_id'] != session['user_id']:
+        flash("You are not authorized to edit this comment")
+        return redirect(url_for('post', post_id=post_id))
+    database_methods.edit_comment(comment_id, comment_content)
+    return redirect(url_for('post', post_id=post_id))
 
 @app.get('/settings-page')
 @other_methods.check_user
