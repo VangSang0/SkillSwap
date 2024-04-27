@@ -80,4 +80,4 @@ CREATE TABLE IF NOT EXISTS Post_Likes(
     PRIMARY KEY(like_id),
     FOREIGN KEY (post_id) REFERENCES Posts(post_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
-)
+);
