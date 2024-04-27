@@ -210,3 +210,48 @@ def edit_post(post_id: int, post_content: str) -> bool:
                                 post_id = %s
                             ''', [post_content, post_id])
             # what can I return here?
+
+def get_user_concentration(user_id: int) -> dict[str, Any] | None:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                concentration
+                            FROM 
+                                users
+                            WHERE 
+                                user_id = %s
+                            ''', [user_id])
+            concentration = cursor.fetchone()
+            return concentration
+        
+def get_user_first_name(user_id: int) -> dict[str, Any] | None:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                first_name
+                            FROM 
+                                users
+                            WHERE 
+                                user_id = %s
+                            ''', [user_id])
+            first_name = cursor.fetchone()
+            return first_name
+
+def get_user_last_name(user_id: int) -> dict[str, Any] | None:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                last_name
+                            FROM 
+                                users
+                            WHERE 
+                                user_id = %s
+                            ''', [user_id])
+            last_name = cursor.fetchone()
+            return last_name
