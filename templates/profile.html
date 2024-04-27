@@ -6,7 +6,7 @@
 
         <div class="user-bio">
             <h2>{{ user.first_name }} {{ user.last_name}} </h2>
-            <h3>{{ user.concentration }} </h3>
+            <h4>{{ user.concentration }} </h4>
 
         </div>
         <form action="/settings-page" method="get">
@@ -14,6 +14,11 @@
         </form>
     </div>
 
+    <div class="profile-sections">
+        <a href="#"><h4 id="profile_post_btn">Posts</h4></a>
+        <a href="#"><h4 id="profile_replies_btn">Replies</h4></a>
+        <!-- Under replies, users comments will appear -->
+    </div>
     <div class="profile-content">
 
         {% for post in post %}
