@@ -309,7 +309,7 @@ footer{
     margin-left: 30px;
 }
 .user-bio{
-    margin-right: 600px;
+    margin-right: 300px;
 }
 
 #edit-profile-btn{
@@ -319,6 +319,21 @@ footer{
     border: none;
     border-radius: 10px;
     cursor: pointer;
+}
+
+.profile-sections{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-left: 300px;
+    margin-right: 300px;
+    border-bottom: solid;
+    border-bottom-color: var(--darkgray);
+}
+
+.profile-sections a{
+    text-decoration: none;
+    color: black;
 }
 
 /* my posts page */
