@@ -291,3 +291,28 @@ footer{
     font-size: 0.75rem;
     color: gray;
 }
+
+
+/* For profile page */
+
+.profile-bio{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 20px;
+
+}
+
+.profile-bio i{
+    font-size:70px;
+    margin: 20px;
+}
+
+#edit-profile-btn{
+    background-color: var(--websiteblue);
+    color: white;
+    padding: 7px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
