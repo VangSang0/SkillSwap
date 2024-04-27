@@ -1,20 +1,21 @@
 {% extends "_layout.html" %}
 
 {% block maincontent%}
-    <div class="profile-title">
-        <div>
-            <i id="profilepg-pfp" class="bi bi-person-circle"></i>
-        </div>
-        <div id="username-block">
-            <h1>
-            username!!
-            </h1>
-        </div>
-        <div>
-            <button id="editpfp">Edit Profile</button>
-        </div>
-    </div>
+    <div class="profile-bio">
+        <i class="bi bi-person-circle"></i>
+        <div class="user-bio">
 
+            <h2>{{ current_user.first_name}} {{current_user.last_name}}</h2>
+            <h3>{{ current_user.concentration }}</h3>
+
+        </div>
+        <form action="/edit-profile" method="get">
+            <button id="edit-profile-btn" type="submit">Edit Profile</button>
+        </form>
+
+        
+
+    </div>
 
 {% endblock %}
 
