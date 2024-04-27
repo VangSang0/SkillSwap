@@ -300,12 +300,16 @@ footer{
     flex-direction: row;
     align-items: center;
     margin: 20px;
-
+    justify-content: space-between;
 }
 
 .profile-bio i{
-    font-size:70px;
+    font-size:80px;
     margin: 20px;
+    margin-left: 30px;
+}
+.user-bio{
+    margin-right: 600px;
 }
 
 #edit-profile-btn{
@@ -316,3 +320,9 @@ footer{
     border-radius: 10px;
     cursor: pointer;
 }
+
+/* my posts page */
+#my_post_username{
+    margin: 20px;
+}
+
