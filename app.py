@@ -122,9 +122,17 @@ def home_page():
 @app.get('/profile-page')
 @other_methods.check_user
 def profile():
-    if 'user_id' not in session:
-        return redirect(url_for('sign_in'))
-    return render_template('profile.html')
+    current_user = database_methods.get_user_by_id(session['user_id'])
+    user_posts = database_methods.get_posts_by_user_id(session['user_id'])
+
+    return render_template('profile.html', current_user=current_user, user_posts=user_posts)
+
+
+
+
+
+
+
 
 @app.get('/friends-page')
 @other_methods.check_user
