@@ -239,3 +239,15 @@ footer{
     font-size: 0.75rem;
     color: gray;
 }
+
+
+/* This is for the like button */
+.like-button {
+    background-color: transparent;
+    border: none; 
+    cursor: pointer; 
+}
+
+.like-button i.bi-heart-fill {
+    color: #ff0000; 
+}

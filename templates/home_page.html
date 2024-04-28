@@ -46,8 +46,8 @@
                 <div class="post-btns">
                     <!-- Like button -->
                     <button class="like-button" data-post-id="{{ post.post_id }}" onclick="likePost(this)">
-                      <i class="bi bi-heart"></i>
-                     </button>
+                        <i class="bi bi-heart"></i>
+                    </button>
                     <p>{{ post.num_likes }}</p>
                     <i class="bi bi-chat-square-text"></i>
                     <p>{{ post.num_comments }}</p>
@@ -72,49 +72,4 @@
             <p class="recomm-content">Enrolled: jinja variable</p>
         </div>    
     </div>
-    <script>
-        // Function to handle like button click
-        function likePost(button) {
-            const postId = button.getAttribute('data-post-id');
-            // Fetch CSRF token from a meta tag or another source
-            const csrfToken = getCSRFToken();
-            
-            // Make the fetch request to the server to toggle the like
-            fetch('/toggle-like', {
-                method: 'POST',
-                body: JSON.stringify({ post_id: postId }),
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Include CSRF token in the request headers
-                    'X-CSRF-Token': csrfToken
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.statusText);
-                }
-                return response.json(); // Assuming the server responds with JSON
-            })
-            .then(data => {
-                if (data.success) {
-                    // Update the number of likes displayed
-                    const likeCountSpan = button.nextElementSibling; // Assuming the <span> immediately follows the button
-                    likeCountSpan.textContent = data.likeCount;
-                    // Toggle heart icon style
-                    button.querySelector('i').classList.toggle('bi-heart-fill');
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-        
-        // Function to retrieve CSRF token
-        function getCSRFToken() {
-            const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
-            return csrfMetaTag ? csrfMetaTag.getAttribute('content') : '';
-        }
-        </script>
 {% endblock %}
