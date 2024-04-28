@@ -1,9 +1,11 @@
 import os, re
 import random
 from dotenv import load_dotenv
-from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
+#from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
+from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods, other_methods
 from flask_bcrypt import Bcrypt
+from flask import request, redirect, url_for, flash, session
 
 
 load_dotenv()
@@ -298,6 +300,35 @@ def confirm_edit_comment():
         return redirect(url_for('post', post_id=post_id))
     database_methods.edit_comment(comment_id, comment_content)
     return redirect(url_for('post', post_id=post_id))
+
+@app.post('/toggle-like')
+@other_methods.check_user  # Assuming this decorator checks if the user is logged in
+def toggle_like():
+    data = request.get_json()
+    post_id = data.get('post_id')
+
+    if not post_id:
+        # For AJAX, you should return a JSON response
+        return jsonify(success=False, message="Invalid post"), 400
+
+    user_id = session['user_id']  # Get the user ID from the session
+
+    try:
+        # Perform the like toggle and get the new like count
+        new_like_count, operation = database_methods.toggle_like(user_id, int(post_id))
+
+        # Prevent negative like count
+        if new_like_count < 0:
+            new_like_count = 0
+            database_methods.set_like_count(post_id, new_like_count)
+
+        return jsonify(success=True, likeCount=new_like_count, operation=operation)
+
+    except Exception as e:
+        # Log the exception for debugging
+        app.logger.error('Error while toggling like: %s', str(e))
+        return jsonify(success=False, message="An error occurred while toggling the like."), 500
+
 
 @app.get('/settings-page')
 @other_methods.check_user
