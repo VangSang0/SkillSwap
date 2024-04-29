@@ -240,7 +240,85 @@ footer{
 }
 
 
+/* Styling for settings page */
 
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: var(--sidepanes);
+    border: 1px solid var(--darkgray);
+    border-radius: 5px;
+ }
+ 
+ 
+ h1 {
+    text-align: center;
+    color: rgb(0, 0, 0);
+ }
+ 
+ 
+ form {
+    margin-top: 20px;
+ }
+ 
+ 
+ section {
+    margin-bottom: 20px;
+ }
+ 
+ 
+ h2 {
+    margin-bottom: 10px;
+    color: rgb(0, 0, 0);
+ }
+ 
+ 
+ label {
+    display: block;
+    margin-bottom: 5px;
+    color: rgb(0, 0, 0);
+ }
+ 
+ 
+ input[type="text"],
+ input[type="email"],
+ input[type="password"],
+ select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid var(--darkgray);
+    border-radius: 4px;
+ }
+ 
+ 
+ button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: var(--websiteblue);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+ }
+ 
+ 
+ button:hover {
+    background-color: #0056a3;
+ }
+ 
+ 
+ button:active {
+    background-color: #003c74;
+ }
+ 
+ 
+ 
 
 
 /* for the posts */

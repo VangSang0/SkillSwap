@@ -1,4 +1,63 @@
 {% extends "_layout.html" %}
+
+
 {% block maincontent %}
-    <p>You are in the settings page</p>
+<div class="container">
+   <h1>Settings</h1>
+       <!-- Display flash messages -->
+       {% with messages = get_flashed_messages() %}
+       {% if messages %}
+           {% for message in messages %}
+               <div class="flash-message">
+                   {{ message }}
+               </div>
+           {% endfor %}
+       {% endif %}
+   {% endwith %}
+   <form action="{{ url_for('save_settings') }}" method="post">
+       <section>
+           <h2>Account Settings</h2>
+           <label for="username">Username:</label>
+           <input type="text" id="username" name="username" value="{{ user_info.username }}" disabled>
+           <label for="email">Email:</label>
+           <input type="email" id="email" name="email" value="{{ user_info.email }}">
+           <label for="first-name">First Name:</label>
+           <input type="text" id="first-name" name="first-name" value="{{ user_info.first_name }}">           
+           <label for="last-name">Last Name:</label>
+           <input type="text" id="last-name" name="last-name" value="{{ user_info.last_name }}">
+       </section>
+       <section>
+           <h2>Change Username</h2>
+           <label for="new-username">New Username:</label>
+           <input type="text" id="new-username" name="new-username" placeholder="Enter new username">
+       </section>
+       <section>
+           <h2>Change Password</h2>
+           <label for="current-password">Current Password:</label>
+           <input type="password" id="current-password" name="current-password" placeholder="Enter current password">
+           <label for="new-password">New Password:</label>
+           <input type="password" id="new-password" name="new-password" placeholder="Enter new password">
+           <label for="confirm-new-password">Confirm New Password:</label>
+           <input type="password" id="confirm-new-password" name="confirm-new-password" placeholder="Confirm new password">
+       </section>
+       <section>
+           <h2>Computer Science Concentration</h2>
+           <label for="concentration">Select your concentration:</label>
+           <select id="concentration" name="concentration">
+               <option value="Information Technology" {% if user_info.concentration == "Information Technology" %} selected {% endif %}>Information Technology</option>
+               <option value="Bioinformatics" {% if user_info.concentration == "Bioinformatics" %} selected {% endif %}>Bioinformatics</option>
+               <option value="Human Computer Interaction" {% if user_info.concentration == "Human Computer Interaction" %} selected {% endif %}>Human Computer Interaction</option>
+               <option value="Ai, Robotics, and Gaming" {% if user_info.concentration == "Ai, Robotics, and Gaming" %} selected {% endif %}>Ai, Robotics, and Gaming</option>
+               <option value="Cybersecurity" {% if user_info.concentration == "Cybersecurity" %} selected {% endif %}>Cybersecurity</option>
+               <option value="Data Science" {% if user_info.concentration == "Data Science" %} selected {% endif %}>Data Science</option>
+               <option value="Software Engineering" {% if user_info.concentration == "Software Engineering" %} selected {% endif %}>Software Engineering</option>
+               <option value="Software, Systems, and Networks" {% if user_info.concentration == "Software, Systems, and Networks" %} selected {% endif %}>Software, Systems, and Networks</option>
+               <option value="Web and Mobile Applications" {% if user_info.concentration == "Web and Mobile Applications" %} selected {% endif %}>Web and Mobile Applications</option>
+           </select>
+           <p>Selected Concentration: {{ user_info.concentration }}</p>
+       </section>
+      
+       <button type="submit">Save Changes</button>
+   </form>
+</div>
 {% endblock %}

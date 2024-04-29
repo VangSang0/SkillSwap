@@ -439,3 +439,74 @@ def get_incoming_friend_requests(user_id):
             ''', [user_id])
             requests = cursor.fetchall()
             return requests
+def get_user_by_id(user_id: int) -> dict[str, Any] | None: #settings(nicole)
+   pool = get_pool()
+   with pool.connection() as connection:
+       with connection.cursor(row_factory=dict_row) as cursor:
+           cursor.execute('''
+                           SELECT
+                               user_id,
+                               username,
+                               first_name,
+                               last_name,
+                               email,
+                               concentration,
+                               hash_pass AS hashed_password
+                           FROM
+                               Users
+                           WHERE
+                               user_id = %s
+                           ''', [user_id])
+           user = cursor.fetchone()
+           if user is None:
+               return None
+           else:
+               return user
+
+
+def update_user_settings(user_id: int, email: str, first_name: str, last_name: str):
+   pool = get_pool()
+   with pool.connection() as connection:
+       with connection.cursor() as cursor:
+           cursor.execute('''
+                           UPDATE Users
+                           SET email = %s, first_name = %s, last_name = %s
+                           WHERE user_id = %s
+                           ''', [email, first_name, last_name, user_id])
+           connection.commit()
+
+
+def update_username(user_id: int, new_username: str):
+   pool = get_pool()
+   with pool.connection() as connection:
+       with connection.cursor() as cursor:
+           cursor.execute('''
+                           UPDATE Users
+                           SET username = %s
+                           WHERE user_id = %s
+                           ''', [new_username, user_id])
+           connection.commit()
+
+
+def update_password(user_id: int, hashed_password: str):
+   pool = get_pool()
+   with pool.connection() as connection:
+       with connection.cursor() as cursor:
+           cursor.execute('''
+                           UPDATE Users
+                           SET hash_pass = %s
+                           WHERE user_id = %s
+                           ''', [hashed_password, user_id])
+           connection.commit()
+
+
+def update_concentration(user_id: int, concentration: str):
+   pool = get_pool()
+   with pool.connection() as connection:
+       with connection.cursor() as cursor:
+           cursor.execute('''
+                           UPDATE Users
+                           SET concentration = %s
+                           WHERE user_id = %s
+                           ''', [concentration, user_id])
+           connection.commit()

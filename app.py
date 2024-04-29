@@ -341,10 +341,62 @@ def toggle_like():
         return jsonify(success=False, message="An error occurred while toggling the like."), 500
 
 
-@app.get('/settings-page')
+@app.get('/settings-page') #settings(nicole)
 @other_methods.check_user
 def settings():
-    return render_template('settings_page.html')
+   user_id = session['user_id']
+   user_info = database_methods.get_user_by_id(user_id)
+   if user_info is None:
+       flash("User not found")
+       return redirect(url_for('sign_in'))
+   return render_template('settings_page.html', user_info=user_info)
+
+
+@app.post('/save-settings')
+@other_methods.check_user
+def save_settings():
+   user_id = session.get('user_id')
+   if user_id is None:
+       abort(401) 
+
+
+  
+   email = request.form.get('email')
+   first_name = request.form.get('first-name')
+   last_name = request.form.get('last-name')
+   new_username = request.form.get('new-username')
+   current_password = request.form.get('current-password')
+   new_password = request.form.get('new-password')
+   confirm_new_password = request.form.get('confirm-new-password')
+
+
+  
+   try:
+       if new_username:
+           database_methods.update_username(user_id, new_username)
+           flash("Username updated successfully!", "success")
+      
+       if current_password and new_password and confirm_new_password:
+           user_info = database_methods.get_user_by_id(user_id)
+           if bcrypt.check_password_hash(user_info['hashed_password'], current_password):
+               if new_password == confirm_new_password:
+                   hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+                   database_methods.update_password(user_id, hashed_password)
+                   flash("Password updated successfully!", "success")
+               else:
+                   flash("New passwords do not match", "error")
+           else:
+               flash("Current password is incorrect", "error")
+      
+       database_methods.update_user_settings(user_id, email, first_name, last_name)
+       flash("Settings saved successfully!", "success")
+   except Exception as e:
+       flash(f"An error occurred: {str(e)}", "error")
+       app.logger.error("Error occurred while saving settings: %s", str(e))
+
+
+   return redirect(url_for('settings'))
+
 
 
 
