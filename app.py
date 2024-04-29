@@ -1,17 +1,15 @@
 import os, re
 import random
 from dotenv import load_dotenv
-#from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
+from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
 from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods, other_methods
-from flask_bcrypt import Bcrypt
 from flask import request, redirect, url_for, flash, session
+from app_factory import create_app
 
 
 load_dotenv()
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
-app.secret_key= os.getenv('SECRET_KEY')
+app, bcrypt = create_app()
 
 friend_list = [
     {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
