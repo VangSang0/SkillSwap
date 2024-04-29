@@ -210,9 +210,98 @@ def edit_post(post_id: int, post_content: str) -> bool:
                                 post_id = %s
                             ''', [post_content, post_id])
             # what can I return here?
+
+def add_comment(comment_author_id: int, post_id: int, comment_content: str):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            INSERT INTO Comments (comment_author_id, post_id, content)
+                            VALUES (%s, %s, %s)
+                            RETURNING comment_id
+                            ''', [comment_author_id, post_id, comment_content])
+            comment_id = cursor.fetchone()
+            if comment_id is None:
+                raise Exception('Comment not created')
+            else:
+                return comment_id
             
-            
-def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
+def get_comments_by_post_id(post_id: int):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                Comments.comment_id,
+                                Comments.comment_author_id,
+                                Users.username AS author,
+                                Comments.datetime_posted,
+                                Comments.content
+                            FROM 
+                                Comments
+                            JOIN
+                                Users
+                            ON
+                                Comments.comment_author_id = Users.user_id
+                            WHERE
+                                post_id = %s
+                            ORDER BY 
+                                datetime_posted ASC
+                            ''', [post_id])
+            comments = cursor.fetchall()
+            return comments
+        
+
+def get_comment_by_id(comment_id: int):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                Comments.comment_id,
+                                Comments.comment_author_id,
+                                Users.username AS author,
+                                Comments.datetime_posted,
+                                Comments.content
+                            FROM 
+                                Comments
+                            JOIN
+                                Users
+                            ON
+                                Comments.comment_author_id = Users.user_id
+                            WHERE
+                                comment_id = %s
+                            ''', [comment_id])
+            comment = cursor.fetchone()
+            return comment
+
+def delete_comment(comment_id: int) -> bool:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            DELETE FROM 
+                                Comments
+                            WHERE
+                                comment_id = %s
+                            ''', [comment_id])
+            # what can I return here?
+
+def edit_comment(comment_id: int, comment_content: str) -> bool:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            UPDATE 
+                                Comments
+                            SET
+                                content = %s
+                            WHERE
+                                comment_id = %s
+                            ''', [comment_content, comment_id])
+            # what can I return here?
+
+            def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor(row_factory=dict_row) as cursor:
