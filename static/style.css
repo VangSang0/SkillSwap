@@ -148,11 +148,48 @@ footer{
     bottom: 0;
     width: 100%;
 }
+/* Styling for the Sign in page */
+
+.signing-in{
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+}
+
+.username-cont{
+    position: relative;
+}
+
+.username-cont i{
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+.password-cont{
+    position: relative;
+}
+.password-cont i{
+    position: absolute;
+    top: 50%;
+    left:10px;
+    transform: translateY(-50%);
+}
+.form-control::placeholder{
+    text-indent:1px;
+}
+#username1, #password, #email, #confirm-password, #first-name, #last-name, #username{
+    padding-left: 30px;
+    border-radius: 10px;
+}
+
+
 
 /* Styling for the sign up page */
 .signup {
     font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
+    background-color: rgb(162,204, 215);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -160,12 +197,13 @@ footer{
     margin: 0;
 }
 .signup-container {
-    background-color: white;
+    background-color: var(--sidepanes);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    width: 300px;
+    width: 350px;
 }
+
 .signup-container h2 {
     text-align: center;
 }
@@ -180,16 +218,30 @@ footer{
     border: 1px solid #ddd;
 }
 .sign-up {
-    background-color: #0079d3;
+    background-color: rgb(52,119,141);
     color: white;
-    padding: 10px;
+    padding: 7px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
 }
 .sign-up:hover {
-    background-color: #0056a3;
+    background-color: rgb(23, 71, 87);
 }
+.labeling{
+    position: relative;
+}
+
+.labeling i{
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+
+
+
 
 /* for the posts */
 
@@ -239,3 +291,64 @@ footer{
     font-size: 0.75rem;
     color: gray;
 }
+
+
+/* This is for the like button */
+.like-button {
+    background-color: transparent;
+    border: none; 
+    cursor: pointer; 
+}
+
+.like-button i.bi-heart-fill {
+    color: #ff0000; 
+}
+
+/* For profile page */
+
+.profile-bio{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 20px;
+    justify-content: space-between;
+}
+
+.profile-bio i{
+    font-size:80px;
+    margin: 20px;
+    margin-left: 30px;
+}
+.user-bio{
+    margin-right: 300px;
+}
+
+#edit-profile-btn{
+    background-color: var(--websiteblue);
+    color: white;
+    padding: 7px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.profile-sections{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-left: 300px;
+    margin-right: 300px;
+    border-bottom: solid;
+    border-bottom-color: var(--darkgray);
+}
+
+.profile-sections a{
+    text-decoration: none;
+    color: black;
+}
+
+/* my posts page */
+#my_post_username{
+    margin: 20px;
+}
+

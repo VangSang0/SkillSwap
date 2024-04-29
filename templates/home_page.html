@@ -1,6 +1,4 @@
 {% extends "_layout.html" %}
-
-
 {% block maincontent %}
     <div class="post">
         <i class="bi bi-person-circle"></i>
@@ -32,7 +30,7 @@
                 {% if post.post_author_id == current_user.user_id %}
                     <form action="/edit-post/{{ post.post_id }}" method="get">
                         <input type="hidden" name="post_id" value="{{ post.post_id }}">
-                        <button type="submit" class="btn btn-danger btn-sm" id="delete-button">Edit</button>
+                        <button type="submit" class="btn btn-danger btn-sm" id="edit-post-button">Edit</button>
                     </form>
                     <form action="/delete-post" method="post">
                         <button name="delete" type="submit" class="btn btn-danger btn-sm" id="delete-button" value="{{ post.post_id }}" >Delete</button>
@@ -46,7 +44,10 @@
                     {{ post.post_content }}
                 </p>
                 <div class="post-btns">
-                    <i class="bi bi-heart"></i>
+                    <!-- Like button -->
+                    <button class="like-button" data-post-id="{{ post.post_id }}" onclick="likePost(this)">
+                        <i class="bi bi-heart"></i>
+                    </button>
                     <p>{{ post.num_likes }}</p>
                     <i class="bi bi-chat-square-text"></i>
                     <p>{{ post.num_comments }}</p>

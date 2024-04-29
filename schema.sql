@@ -70,3 +70,15 @@ CREATE TABLE IF NOT EXISTS User_Courses(
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 );
+
+
+CREATE TABLE IF NOT EXISTS Post_Likes(
+    like_id         SERIAL,
+    post_id         INTEGER    NOT NULL,
+    user_id         INTEGER    NOT NULL,
+
+    PRIMARY KEY(like_id),
+    FOREIGN KEY (post_id) REFERENCES Posts(post_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+)
+
