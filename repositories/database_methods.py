@@ -213,6 +213,7 @@ def edit_post(post_id: int, post_content: str) -> bool:
                             ''', [post_content, post_id])
             # what can I return here?
 
+
 def add_comment(comment_author_id: int, post_id: int, comment_content: str):
     pool = get_pool()
     with pool.connection() as connection:
@@ -252,8 +253,7 @@ def get_comments_by_post_id(post_id: int):
                             ''', [post_id])
             comments = cursor.fetchall()
             return comments
-        
-
+          
 def get_comment_by_id(comment_id: int):
     pool = get_pool()
     with pool.connection() as connection:
@@ -409,3 +409,33 @@ def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
             user = cursor.fetchone()
             return user
 
+
+def get_user_friends(user_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT U.user_id, U.username, COUNT(MF.friend_user_id) AS mutual_friends_count
+                FROM Users U
+                JOIN User_Friends UF ON U.user_id = UF.friend_user_id
+                LEFT JOIN User_Friends MF ON U.user_id = MF.user_id AND MF.friend_user_id = UF.user_id
+                WHERE UF.user_id = %s
+                GROUP BY U.user_id
+            ''', [user_id])
+            friends = cursor.fetchall()
+            return friends
+
+def get_incoming_friend_requests(user_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT U.user_id, U.username, COUNT(MF.friend_user_id) AS mutual_connections
+                FROM Users U
+                JOIN User_Friends UF ON U.user_id = UF.user_id
+                LEFT JOIN User_Friends MF ON U.user_id = MF.user_id AND MF.friend_user_id = UF.friend_user_id
+                WHERE UF.friend_user_id = %s AND MF.friend_user_id IS NULL
+                GROUP BY U.user_id
+            ''', [user_id])
+            requests = cursor.fetchall()
+            return requests

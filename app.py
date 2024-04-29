@@ -139,11 +139,14 @@ def profile():
 @app.get('/friends-page')
 @other_methods.check_user
 def friends():
+    user_id = session['user_id']
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
-    return render_template('friends_page.html',friend_list=friend_list )
-
-
+    # Retrieve user's friends from the database
+    friends = database_methods.get_user_friends(user_id)
+    # Retrieve incoming friend requests
+    incoming_requests = database_methods.get_incoming_friend_requests(user_id)
+    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests)
 
 @app.post('/user-post')
 @other_methods.check_user
@@ -342,4 +345,6 @@ def toggle_like():
 @other_methods.check_user
 def settings():
     return render_template('settings_page.html')
+
+
 

@@ -10,44 +10,16 @@
         <!-- Incoming Friend Requests -->
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title mb-4">Incoming Friend Requests</h5>
-                <!-- Dummy Incoming Requests -->
-                <div class="row mb-3 align-items-center">
-                    <div class="col-md-3">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Requester Image" class="img-fluid rounded-circle">
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Michael Lee</h6>
-                        <p class="text-muted">3 mutual connections</p>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-sm btn-success mr-2">Confirm</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </div>
-                </div>
-                <div class="row mb-3 align-items-center">
-                    <div class="col-md-3">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="Requester Image" class="img-fluid rounded-circle">
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Amy Clark</h6>
-                        <p class="text-muted">2 mutual connections</p>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-sm btn-success mr-2">Confirm</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </div>
-                </div>
-                <!-- End Dummy Incoming Requests -->
-
+                <h5 class="card-title mb-4">Incoming Friend Requests ({{ incoming_requests|length }})</h5>
                 {% if incoming_requests %}
                     {% for request in incoming_requests %}
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-3">
-                                <img src="{{ request.profile_image }}" alt="Requester Image" class="img-fluid rounded-circle">
+                                <!-- Display user's profile image -->
+                                <img src="{{ url_for('static', filename='avatar_placeholder.png') }}" alt="Requester Image" class="img-fluid rounded-circle">
                             </div>
                             <div class="col-md-6">
-                                <h6>{{ request.name }}</h6>
+                                <h6>{{ request.username }}</h6>
                                 <p class="text-muted">{{ request.mutual_connections }} mutual connections</p>
                             </div>
                             <div class="col-md-3">
@@ -59,67 +31,21 @@
                 {% else %}
                     <p>No incoming friend requests.</p>
                 {% endif %}
-                
             </div>
         </div>
         <!-- End Incoming Friend Requests -->
 
-        <h2>Friends</h2>
         <!-- Friend List -->
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title mb-4">Friend List (5)</h5>
+                <h5 class="card-title mb-4">Friend List ({{ friends|length }})</h5>
                 <div class="row">
-                    <!-- Dummy Friend Items -->
-                    <div class="col-md-4 mb-3">
-                        <div class="friend-item text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="Friend Image" class="img-fluid rounded-circle mb-2">
-                            <h6 class="mb-1">John Doe</h6>
-                            <p class="text-muted">100 friends</p>
-                            <a href="#" class="btn btn-sm btn-primary">View Profile</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="friend-item text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="Friend Image" class="img-fluid rounded-circle mb-2">
-                            <h6 class="mb-1">Jane Smith</h6>
-                            <p class="text-muted">200 friends</p>
-                            <a href="#" class="btn btn-sm btn-primary">View Profile</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="friend-item text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="Friend Image" class="img-fluid rounded-circle mb-2">
-                            <h6 class="mb-1">Alice Johnson</h6>
-                            <p class="text-muted">150 friends</p>
-                            <a href="#" class="btn btn-sm btn-primary">View Profile</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="friend-item text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="Friend Image" class="img-fluid rounded-circle mb-2">
-                            <h6 class="mb-1">Bob Williams</h6>
-                            <p class="text-muted">180 friends</p>
-                            <a href="#" class="btn btn-sm btn-primary">View Profile</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="friend-item text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Friend Image" class="img-fluid rounded-circle mb-2">
-                            <h6 class="mb-1">Sarah Brown</h6>
-                            <p class="text-muted">120 friends</p>
-                            <a href="#" class="btn btn-sm btn-primary">View Profile</a>
-                        </div>
-                    </div>
-                    <!-- End Dummy Friend Items -->
-
-                    <!-- Add more friend items here -->
                     {% for friend in friends %}
                         <div class="col-md-4 mb-3">
                             <div class="friend-item text-center">
-                                <img src="{{ friend.profile_image }}" alt="Friend Image" class="img-fluid rounded-circle mb-2">
-                                <h6 class="mb-1">{{ friend.name }}</h6>
-                                <p class="text-muted">{{ friend.num_friends }} friends</p>
+                                <img src="{{ url_for('static', filename='avatar_placeholder.png') }}" alt="Friend Image" class="img-fluid rounded-circle mb-2">
+                                <h6 class="mb-1">{{ friend.username }}</h6>
+                                <p class="text-muted">{{ friend.mutual_friends_count }} mutual friends</p>
                                 <a href="#" class="btn btn-sm btn-primary">View Profile</a>
                             </div>
                         </div>
