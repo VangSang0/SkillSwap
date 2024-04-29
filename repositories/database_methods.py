@@ -301,3 +301,21 @@ def edit_comment(comment_id: int, comment_content: str) -> bool:
                             ''', [comment_content, comment_id])
             # what can I return here?
 
+            def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT 
+                                first_name,
+                                last_name,
+                                email,
+                                username,
+                                concentration
+                            FROM 
+                                users
+                            WHERE 
+                                user_id = %s
+                            ''', [user_id])
+            user = cursor.fetchone()
+            return user
