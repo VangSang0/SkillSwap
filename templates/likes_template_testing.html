@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like Post Example</title>
+</head>
+<body>
+    <h2>Sample Post</h2>
+    <p>This is an example of a post that users can like.</p>
+    <button id="likeButton">Like</button>
+    <span id="likeCount">0</span> Likes
+
+    <script>
+        // JavaScript to handle liking the post
+        let likeCount = 0;
+        const likeButton = document.getElementById('likeButton');
+        const likeCountDisplay = document.getElementById('likeCount');
+
+        likeButton.addEventListener('click', function() {
+            likeCount++; // Increment the like count
+            likeCountDisplay.textContent = likeCount; // Update the display
+        });
+    </script>
+</body>
+</html>

@@ -293,6 +293,17 @@ footer{
 }
 
 
+/* This is for the like button */
+.like-button {
+    background-color: transparent;
+    border: none; 
+    cursor: pointer; 
+}
+
+.like-button i.bi-heart-fill {
+    color: #ff0000; 
+}
+
 /* For profile page */
 
 .profile-bio{

@@ -1,6 +1,8 @@
 from typing import Any
 from repositories.db import get_pool
 from psycopg.rows import dict_row
+import psycopg
+from typing import Tuple
 
 
 def does_user_exist(username: str) -> bool:
@@ -301,7 +303,94 @@ def edit_comment(comment_id: int, comment_content: str) -> bool:
                             ''', [comment_content, comment_id])
             # what can I return here?
 
-            def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
+
+def toggle_like(user_id: int, post_id: int) -> Tuple[int, str]:
+    pool = get_pool()  # Assume get_pool returns a connection pool
+    operation = 'unlike'  # Default operation
+
+    try:
+        with pool.connection() as connection:
+            with connection.cursor() as cursor:
+                # Check if the like already exists
+                cursor.execute('''
+                    SELECT like_id FROM Post_Likes
+                    WHERE user_id = %s AND post_id = %s
+                ''', (user_id, post_id))
+                like = cursor.fetchone()
+                
+                if like:
+                    # Like exists, so remove it
+                    cursor.execute('''
+                        DELETE FROM Post_Likes
+                        WHERE like_id = %s
+                    ''', (like[0],))
+                    cursor.execute('''
+                        UPDATE Posts
+                        SET num_likes = num_likes - 1
+                        WHERE post_id = %s
+                        RETURNING num_likes
+                    ''', (post_id,))
+                    new_like_count = cursor.fetchone()[0]
+                else:
+                    # Like does not exist, so add it
+                    cursor.execute('''
+                        INSERT INTO Post_Likes (post_id, user_id)
+                        VALUES (%s, %s)
+                    ''', (post_id, user_id))
+                    cursor.execute('''
+                        UPDATE Posts
+                        SET num_likes = num_likes + 1
+                        WHERE post_id = %s
+                        RETURNING num_likes
+                    ''', (post_id,))
+                    new_like_count = cursor.fetchone()[0]
+                    operation = 'like'  # Update operation since a like was added
+                
+                # Commit the transaction
+                connection.commit()
+
+                # Prevent negative like count
+                if new_like_count < 0:
+                    cursor.execute('''
+                        UPDATE Posts
+                        SET num_likes = 0
+                        WHERE post_id = %s
+                    ''', (post_id,))
+                    new_like_count = 0
+                    connection.commit()
+
+                return new_like_count, operation
+
+    except psycopg.DatabaseError as e:
+        # Proper error handling/log message should go here
+        print("Database error:", e)
+        # Optionally, re-raise the error after logging it
+        raise
+
+
+        
+def get_like_count(post_id: int) -> int:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            SELECT num_likes FROM Posts 
+                            WHERE post_id = %s
+                            ''', [post_id])
+            result = cursor.fetchone()
+            return result[0] if result else 0
+        
+def check_user_like(user_id: int, post_id: int) -> bool:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            SELECT 1 FROM Post_Likes 
+                            WHERE user_id = %s AND post_id = %s
+                            ''', (user_id, post_id))
+            return cursor.fetchone() is not None            
+
+def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor(row_factory=dict_row) as cursor:
@@ -319,3 +408,4 @@ def edit_comment(comment_id: int, comment_content: str) -> bool:
                             ''', [user_id])
             user = cursor.fetchone()
             return user
+
