@@ -116,8 +116,11 @@ def home_page():
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     
     current_user = database_methods.get_user_by_id(session['user_id'])
+    users_minus_current = database_methods.get_all_users_except_current(session['user_id'])
+    random.shuffle(users_minus_current)
+    users_minus_current = users_minus_current[:5]
 
-    return render_template('home_page.html', all_posts=all_posts, current_user=current_user)
+    return render_template('home_page.html', all_posts=all_posts, current_user=current_user, users_minus_current=users_minus_current)
 
 
 @app.get('/profile-page')
@@ -130,9 +133,11 @@ def profile():
     user_id = session.get('user_id')
     user = database_methods.get_user_information_by_id(user_id)
     post = database_methods.get_posts_by_user_id(user_id)
+    comment = database_methods.get_comments_by_user_id(user_id)
+    
 
 
-    return render_template('profile.html', user=user, post=post)
+    return render_template('profile.html', user=user, post=post, comment=comment)
 
 
 @app.get('/friends-page')
