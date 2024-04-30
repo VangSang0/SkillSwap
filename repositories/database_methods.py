@@ -410,6 +410,48 @@ def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
             user = cursor.fetchone()
             return user
 
+def get_all_users_except_current(user_id: int):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT 
+                    user_id,
+                    username,
+                    concentration
+                FROM
+                    Users
+                WHERE
+                    user_id != %s
+            ''', [user_id])
+            users = cursor.fetchall()
+            return users
+        
+def get_comments_by_user_id(user_id: int):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT
+                    Comments.comment_id,
+                    Comments.comment_author_id,
+                    Users.username AS author,
+                    Comments.datetime_posted,
+                    Comments.content,
+                    Comments.post_id
+                FROM
+                    Comments
+                JOIN
+                    Users
+                ON
+                    Comments.comment_author_id = Users.user_id
+                WHERE
+                    comment_author_id = %s
+                ORDER BY
+                    datetime_posted ASC
+                ''', [user_id])
+            comment = cursor.fetchall()
+            return comment
 
 def get_user_friends(user_id):
     pool = get_pool()
