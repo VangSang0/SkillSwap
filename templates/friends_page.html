@@ -23,8 +23,13 @@
                                 <p class="text-muted">{{ request.mutual_connections }} mutual connections</p>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-sm btn-success mr-2">Confirm</button>
-                                <button class="btn btn-sm btn-danger">Delete</button>
+                                <form action="/accept-friend-request" method="post">
+                                    <button name="friend_id" id="edit-profile-btn" type="submit" value="{{ request.user_id }}" >Accept</button>
+                                </form>
+                                <form action="/delete-friend-request" method="post">
+                                    <button name="friend_id" id="edit-profile-btn" type="submit" value="{{ request.user_id }}" >Delete</button>
+                                </form>
+                                <a href="/view-profile/{{ request.user_id }}" class="btn btn-sm btn-primary">View Profile</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -46,7 +51,7 @@
                                 <img src="{{ url_for('static', filename='avatar_placeholder.png') }}" alt="Friend Image" class="img-fluid rounded-circle mb-2">
                                 <h6 class="mb-1">{{ friend.username }}</h6>
                                 <p class="text-muted">{{ friend.mutual_friends_count }} mutual friends</p>
-                                <a href="#" class="btn btn-sm btn-primary">View Profile</a>
+                                <a href="/view-profile/{{ friend.user_id }}" class="btn btn-sm btn-primary">View Profile</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -54,6 +59,34 @@
             </div>
         </div>
         <!-- End Friend List -->
+
+        <!-- Pending Friend requests -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Pending Friend Requests ({{ pending_requests|length }})</h5>
+                {% if pending_requests %}
+                    {% for pending in pending_requests %}
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-3">
+                                <!-- Display user's profile image -->
+                                <img src="{{ url_for('static', filename='avatar_placeholder.png') }}" alt="Requester Image" class="img-fluid rounded-circle">
+                            </div>
+                            <div class="col-md-6">
+                                <h6>{{ pending.username }}</h6>
+                                <p class="text-muted">{{ pending.mutual_connections }} mutual connections</p>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="/view-profile/{{ pending.user_id }}" class="btn btn-sm btn-primary">View Profile</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No pending friend requests.</p>
+                {% endif %}
+            </div>
+        </div>
+        <!-- End pending Friend requests -->
+
 
     </div>
 {% endblock %}

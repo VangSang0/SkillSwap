@@ -144,7 +144,9 @@ def friends():
     friends = database_methods.get_user_friends(user_id)
     # Retrieve incoming friend requests
     incoming_requests = database_methods.get_incoming_friend_requests(user_id)
-    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests)
+    # Retrieve outgoing friend requests
+    pending_requests = database_methods.get_outgoing_friend_requests(user_id)
+    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
 
 @app.post('/user-post')
 @other_methods.check_user
@@ -342,59 +344,168 @@ def toggle_like():
 @app.get('/settings-page') #settings(nicole)
 @other_methods.check_user
 def settings():
-   user_id = session['user_id']
-   user_info = database_methods.get_user_by_id(user_id)
-   if user_info is None:
-       flash("User not found")
-       return redirect(url_for('sign_in'))
-   return render_template('settings_page.html', user_info=user_info)
+    user_id = session['user_id']
+    user_info = database_methods.get_user_by_id(user_id)
+    if user_info is None:
+        flash("User not found")
+        return redirect(url_for('sign_in'))
+    return render_template('settings_page.html', user_info=user_info)
 
 
 @app.post('/save-settings')
 @other_methods.check_user
 def save_settings():
-   user_id = session.get('user_id')
-   if user_id is None:
-       abort(401) 
+    user_id = session.get('user_id')
+    if user_id is None:
+        abort(401) 
 
 
-  
-   email = request.form.get('email')
-   first_name = request.form.get('first-name')
-   last_name = request.form.get('last-name')
-   new_username = request.form.get('new-username')
-   current_password = request.form.get('current-password')
-   new_password = request.form.get('new-password')
-   confirm_new_password = request.form.get('confirm-new-password')
+    
+    email = request.form.get('email')
+    first_name = request.form.get('first-name')
+    last_name = request.form.get('last-name')
+    new_username = request.form.get('new-username')
+    current_password = request.form.get('current-password')
+    new_password = request.form.get('new-password')
+    confirm_new_password = request.form.get('confirm-new-password')
 
 
-  
-   try:
-       if new_username:
-           database_methods.update_username(user_id, new_username)
-           flash("Username updated successfully!", "success")
-      
-       if current_password and new_password and confirm_new_password:
-           user_info = database_methods.get_user_by_id(user_id)
-           if bcrypt.check_password_hash(user_info['hashed_password'], current_password):
-               if new_password == confirm_new_password:
-                   hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-                   database_methods.update_password(user_id, hashed_password)
-                   flash("Password updated successfully!", "success")
-               else:
-                   flash("New passwords do not match", "error")
-           else:
-               flash("Current password is incorrect", "error")
-      
-       database_methods.update_user_settings(user_id, email, first_name, last_name)
-       flash("Settings saved successfully!", "success")
-   except Exception as e:
-       flash(f"An error occurred: {str(e)}", "error")
-       app.logger.error("Error occurred while saving settings: %s", str(e))
+    
+    try:
+        if new_username:
+            database_methods.update_username(user_id, new_username)
+            flash("Username updated successfully!", "success")
+        
+        if current_password and new_password and confirm_new_password:
+            user_info = database_methods.get_user_by_id(user_id)
+            if bcrypt.check_password_hash(user_info['hashed_password'], current_password):
+                if new_password == confirm_new_password:
+                    hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+                    database_methods.update_password(user_id, hashed_password)
+                    flash("Password updated successfully!", "success")
+                else:
+                    flash("New passwords do not match", "error")
+            else:
+                flash("Current password is incorrect", "error")
+        
+        database_methods.update_user_settings(user_id, email, first_name, last_name)
+        flash("Settings saved successfully!", "success")
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        app.logger.error("Error occurred while saving settings: %s", str(e))
 
 
-   return redirect(url_for('settings'))
+    return redirect(url_for('settings'))
 
 
+@app.get('/view-profile/<int:user_id>')
+@other_methods.check_user
+def view_profile(user_id):
+    if not user_id:
+        flash("User not found")
+        return redirect(url_for('home_page'))
+    user = database_methods.get_user_information_by_id(user_id)
+    if user is None:
+        flash("User not found")
+        return redirect(url_for('home_page'))
+    users_posts = database_methods.get_posts_by_user_id(user_id)
+    for post in users_posts:
+        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+    
+    pending_friend_request = database_methods.get_pending_friend_request(session['user_id'], user_id)
+    if pending_friend_request:
+        is_pending_friend_request = True
+    else:
+        is_pending_friend_request = False
+
+    recieved_friend_request = database_methods.get_pending_friend_request(user_id, session['user_id'])
+    if recieved_friend_request:
+        is_requested = True
+    else:
+        is_requested = False
+
+    is_friend = False
+    if database_methods.are_users_friends(session['user_id'], user_id) and database_methods.are_users_friends(user_id, session['user_id']):
+        is_friend = True
+    
 
 
+    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested)
+
+@app.post('/send-friend-request')
+@other_methods.check_user
+def send_friend_request():
+    friender_id = session['user_id']
+    friendee_id = request.form.get('friend_id')
+    print(friender_id)
+    print(friendee_id)
+    if not friendee_id:
+        flash("Unable to send Friend Request at this time! Please try again later!")
+        return redirect(url_for('view_profile'), user_id=request.form.get('friend_id'))
+    pending_friend_request_id = database_methods.send_friend_request(friender_id, friendee_id)
+    if not pending_friend_request_id:
+        flash("Unable to send Friend Request at this time! Please try again later!")
+        return redirect(url_for('view_profile'), user_id=request.form.get('friend_id'))
+    flash("Friend request sent successfully!")
+
+    return redirect(url_for('view_profile', user_id=friendee_id))
+
+@app.post('/cancel-friend-request')
+@other_methods.check_user
+def cancel_friend_request():
+    friender_id = session['user_id']
+    friendee_id = request.form.get('friend_id')
+    if not friendee_id:
+        flash("Unable to cancel Friend Request at this time! Please try again later!")
+        return redirect(url_for('view_profile'), user_id=request.form.get('friend_id'))
+    is_cancelled_friend_request = database_methods.cancel_friend_request(friender_id, friendee_id)
+    if is_cancelled_friend_request:
+        flash("Friend request cancelled successfully!")
+    else:
+        abort(404)
+    return redirect(url_for('view_profile', user_id=friendee_id))
+
+@app.post('/accept-friend-request')
+@other_methods.check_user
+def accept_friend_request():
+    friender_id = request.form.get('friend_id')
+    friendee_id = session['user_id']
+    if not friender_id:
+        flash("Unable to accept Friend Request at this time! Please try again later!")
+        return redirect(url_for('friends'))
+    is_accepted_friend_request = database_methods.accept_friend_request(friender_id, friendee_id)
+    if is_accepted_friend_request:
+        flash("Friend request accepted successfully!")
+    else:
+        abort(404)
+    return redirect(url_for('friends'))
+
+@app.post('/delete-friend-request')
+@other_methods.check_user
+def delete_friend_request():
+    friender_id = request.form.get('friend_id')
+    friendee_id = session['user_id']
+    if not friender_id:
+        flash("Unable to delete Friend Request at this time! Please try again later!")
+        return redirect(url_for('friends'))
+    is_deleted_friend_request = database_methods.delete_friend_request(friender_id, friendee_id)
+    if is_deleted_friend_request:
+        flash("Friend request deleted successfully!")
+    else:
+        abort(404)
+    return redirect(url_for('friends'))
+
+@app.post('/unfriend')
+@other_methods.check_user
+def unfriend():
+    friend_id = request.form.get('friend_id')
+    user_id = session['user_id']
+    if not friend_id:
+        flash("Unable to unfriend at this time! Please try again later!")
+        return redirect(url_for('friends'))
+    is_unfriended = database_methods.unfriend(user_id, friend_id)
+    if is_unfriended:
+        flash("Unfriended successfully!")
+    else:
+        abort(404)
+    return redirect(url_for('friends'))
