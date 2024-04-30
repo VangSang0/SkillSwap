@@ -1,17 +1,15 @@
 import os, re
 import random
 from dotenv import load_dotenv
-#from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
+from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
 from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods, other_methods
-from flask_bcrypt import Bcrypt
 from flask import request, redirect, url_for, flash, session
+from app_factory import create_app
 
 
 load_dotenv()
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
-app.secret_key= os.getenv('SECRET_KEY')
+app, bcrypt = create_app()
 
 friend_list = [
     {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
@@ -140,11 +138,14 @@ def profile():
 @app.get('/friends-page')
 @other_methods.check_user
 def friends():
+    user_id = session['user_id']
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
-    return render_template('friends_page.html',friend_list=friend_list )
-
-
+    # Retrieve user's friends from the database
+    friends = database_methods.get_user_friends(user_id)
+    # Retrieve incoming friend requests
+    incoming_requests = database_methods.get_incoming_friend_requests(user_id)
+    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests)
 
 @app.post('/user-post')
 @other_methods.check_user
@@ -339,8 +340,62 @@ def toggle_like():
         return jsonify(success=False, message="An error occurred while toggling the like."), 500
 
 
-@app.get('/settings-page')
+@app.get('/settings-page') #settings(nicole)
 @other_methods.check_user
 def settings():
-    return render_template('settings_page.html')
+   user_id = session['user_id']
+   user_info = database_methods.get_user_by_id(user_id)
+   if user_info is None:
+       flash("User not found")
+       return redirect(url_for('sign_in'))
+   return render_template('settings_page.html', user_info=user_info)
+
+
+@app.post('/save-settings')
+@other_methods.check_user
+def save_settings():
+   user_id = session.get('user_id')
+   if user_id is None:
+       abort(401) 
+
+
+  
+   email = request.form.get('email')
+   first_name = request.form.get('first-name')
+   last_name = request.form.get('last-name')
+   new_username = request.form.get('new-username')
+   current_password = request.form.get('current-password')
+   new_password = request.form.get('new-password')
+   confirm_new_password = request.form.get('confirm-new-password')
+
+
+  
+   try:
+       if new_username:
+           database_methods.update_username(user_id, new_username)
+           flash("Username updated successfully!", "success")
+      
+       if current_password and new_password and confirm_new_password:
+           user_info = database_methods.get_user_by_id(user_id)
+           if bcrypt.check_password_hash(user_info['hashed_password'], current_password):
+               if new_password == confirm_new_password:
+                   hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+                   database_methods.update_password(user_id, hashed_password)
+                   flash("Password updated successfully!", "success")
+               else:
+                   flash("New passwords do not match", "error")
+           else:
+               flash("Current password is incorrect", "error")
+      
+       database_methods.update_user_settings(user_id, email, first_name, last_name)
+       flash("Settings saved successfully!", "success")
+   except Exception as e:
+       flash(f"An error occurred: {str(e)}", "error")
+       app.logger.error("Error occurred while saving settings: %s", str(e))
+
+
+   return redirect(url_for('settings'))
+
+
+
 
