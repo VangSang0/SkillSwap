@@ -42,7 +42,7 @@
 .main-body{
     display: flex;
     flex-direction: row;
-    height: 100vh;
+    height: 200vh;
 }
 
 .main-nav{
@@ -179,7 +179,7 @@ footer{
 .form-control::placeholder{
     text-indent:1px;
 }
-#username1, #password, #email, #confirm-password, #first-name, #last-name, #username{
+#username1, #password, #email, #confirm-password, #first-name, #last-name, #username, #concentration{
     padding-left: 30px;
     border-radius: 10px;
 }
