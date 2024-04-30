@@ -1,15 +1,19 @@
 import os, re
 import random
 from dotenv import load_dotenv
-from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
+from flask import Flask, abort, render_template, redirect, url_for, request, session, flash, Blueprint
 from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods, other_methods
 from flask import request, redirect, url_for, flash, session
+from app import db
 from app_factory import create_app
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 
 load_dotenv()
 app, bcrypt = create_app()
+db = SQLAlchemy(app)
 
 friend_list = [
     {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
@@ -396,5 +400,20 @@ def save_settings():
    return redirect(url_for('settings'))
 
 
+# Define the search_users route to handle GET requests using @app.get()
+@app.get('/search')
+def search_users():
+    query = request.args.get('query', '')
+
+    if query:
+        # Construct SQL query for case-insensitive username search
+        search_query = f"%{query}%"
+        sql = text("SELECT * FROM Users WHERE username ILIKE :query")
+        result = db.engine.execute(sql, query=search_query)
+        users = [dict(row) for row in result]
+    else:
+        users = []
+
+    return render_template('search_results.html', users=users, query=query)
 
 
