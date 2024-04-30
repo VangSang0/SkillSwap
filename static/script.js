@@ -63,3 +63,26 @@ function getCSRFToken() {
     const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
     return csrfMetaTag ? csrfMetaTag.getAttribute('content') : '';
 }
+
+
+// For profile replies button
+
+document.addEventListener('DOMContentLoaded', function() {
+    const profilePostbtn = document.getElementById('profile_post_btn');
+    const profileRepliesbtn = document.getElementById('profile_replies_btn');
+    const profilePosts = document.getElementById('posts-tab'); 
+    const profileReplies = document.getElementById('replies-tab');
+
+    profilePostbtn.addEventListener('click', function() {
+        profilePosts.classList.remove('hidden');
+        profileReplies.classList.add('hidden');
+    });
+
+    profileRepliesbtn.addEventListener('click', function() {
+        profilePosts.classList.add('hidden');
+        profileReplies.classList.remove('hidden');
+    });
+});
+
+
+
