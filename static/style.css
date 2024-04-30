@@ -112,6 +112,7 @@
     font-size: 20px;
     margin-right: 620px;
     margin-left: 15px;
+    
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -412,6 +413,23 @@ footer{
     margin-right: 300px;
 }
 
+.profile-btns{
+    outline: none;
+    border: none;
+    color: black;
+    font-size: 20px;
+    background-color: transparent;
+    overflow: hidden;
+}
+
+.profile-btns:hover{
+    background-color: transparent;
+}
+
+.profile-btns.active{
+    background-color: var(--pfpgray);
+}
+
 #edit-profile-btn{
     background-color: var(--websiteblue);
     color: white;
@@ -425,8 +443,8 @@ footer{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    margin-left: 300px;
-    margin-right: 300px;
+    margin-left: 250px;
+    margin-right: 250px;
     border-bottom: solid;
     border-bottom-color: var(--darkgray);
 }
@@ -479,6 +497,7 @@ footer{
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: bold;
 }
+
 
 .hidden{
     display: none;
