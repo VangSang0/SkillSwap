@@ -1,2 +1,23 @@
 {% extends "_layout.html" %}
 
+{% block title %}
+    SkillSwap | Search Results
+{% endblock %}
+
+{% block maincontent %}
+    <div class="container mt-5">
+        <h3>Search Results for "{{ query }}"</h3>
+        <ul>
+            {% for user in users %}
+                <li>
+                    <div>{{ user.username }}</div>
+                    <!-- Display other user details as needed -->
+                    <!-- You can include mutual friends, add friend button, etc. -->
+                    <a href="{{ url_for('profile.view_profile', username=user.username) }}" class="btn btn-primary">View Profile</a>
+                </li>
+            {% else %}
+                <li>No results found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

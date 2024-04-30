@@ -5,15 +5,14 @@ from flask import Flask, abort, render_template, redirect, url_for, request, ses
 from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
 from repositories import database_methods, other_methods
 from flask import request, redirect, url_for, flash, session
-from app import db
 from app_factory import create_app
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
 
 load_dotenv()
-app, bcrypt = create_app()
-db = SQLAlchemy(app)
+app, bcrypt, db = create_app()
+
 
 friend_list = [
     {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
