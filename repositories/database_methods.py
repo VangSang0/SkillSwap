@@ -35,15 +35,15 @@ def does_email_exist(email: str) -> bool:
             user_id = cursor.fetchone()
             return user_id is not None
 
-def create_user(first_name : str, last_name : str, user_email: str, username: str, hashed_password: str):
+def create_user(first_name : str, last_name : str, user_email: str, username: str, hashed_password: str, concentration: str):
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute('''
-                            INSERT INTO Users (first_name, last_name, email, username, hash_pass)
-                            VALUES (%s, %s, %s, %s, %s)
+                            INSERT INTO Users (first_name, last_name, email, username, hash_pass, concentration)
+                            VALUES (%s, %s, %s, %s, %s, %s)
                             RETURNING user_id
-                            ''', [first_name, last_name, user_email, username, hashed_password])
+                            ''', [first_name, last_name, user_email, username, hashed_password, concentration])
             user_id = cursor.fetchone()
             if user_id is None:
                 raise Exception('User not created')
