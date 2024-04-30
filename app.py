@@ -54,6 +54,7 @@ def signing_up():
     user_email = request.form.get('email')
     first_name = request.form.get('first-name')
     last_name = request.form.get('last-name')
+    concentration = request.form.get('concentration')   
     username = request.form.get('username')
     password = request.form.get('password')
     confirm_password = request.form.get('confirm-password')
@@ -93,7 +94,7 @@ def signing_up():
         return redirect(url_for('sign_up_tab'))
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = database_methods.create_user(first_name, last_name, user_email, username, hashed_password)
+    new_user = database_methods.create_user(first_name, last_name, user_email, username, hashed_password, concentration)
 
     flash(f"Account created successfully {new_user['username']}! Please sign in to continue.")
 
