@@ -15,13 +15,15 @@
     </div>
 
     <div class="profile-sections">
-        <a href="#"><h4 id="profile_post_btn">Posts</h4></a>
-        <a href="#"><h4 id="profile_replies_btn">My Replies</h4></a>
+        <!-- <a href="#"><h4 id="profile_post_btn">Posts</h4></a>
+        <a href="#"><h4 id="profile_replies_btn">My Replies</h4></a> -->
         <!-- under posts, users posts will appear -->
         <!-- Under replies, users comments will appear -->
+        <button id="defaultOpen" class="profile-btns" onclick="openBtn(event,'MyPosts')">My Posts</button>
+        <button id="profile_replies_btn" class="profile-btns" onclick="openBtn(event,'MyComments')">My Comments</button>
     </div>
 
-    <div class="posts-tab" id="posts-tab">
+    <div class="btnContent" id="MyPosts">
         {% for post in post %}
         
         <div class="post">
@@ -57,7 +59,7 @@
         {% endfor %}
     </div>
 
-    <div class="hidden" id="replies-tab">
+    <div class="btnContent" id="MyComments">
 
         {% for comment in comment %}
 
@@ -87,7 +89,6 @@
         </div>
         {% endfor %}
 
-        
     </div>
 {% endblock %}
         
