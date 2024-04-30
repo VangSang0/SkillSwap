@@ -396,6 +396,7 @@ def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
                             SELECT 
+                                user_id,
                                 first_name,
                                 last_name,
                                 email,
@@ -430,126 +431,180 @@ def get_incoming_friend_requests(user_id):
     with pool.connection() as connection:
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
-                SELECT U.user_id, U.username, COUNT(MF.friend_user_id) AS mutual_connections
+                SELECT U.user_id, U.username
                 FROM Users U
-                JOIN User_Friends UF ON U.user_id = UF.user_id
-                LEFT JOIN User_Friends MF ON U.user_id = MF.user_id AND MF.friend_user_id = UF.friend_user_id
-                WHERE UF.friend_user_id = %s AND MF.friend_user_id IS NULL
-                GROUP BY U.user_id
+                JOIN pending_friend_requests PFR ON U.user_id = PFR.friender_id
+                WHERE PFR.friendee_id = %s
             ''', [user_id])
             requests = cursor.fetchall()
             return requests
+
+def get_outgoing_friend_requests(user_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT U.user_id, U.username
+                FROM Users U
+                JOIN pending_friend_requests PFR ON U.user_id = PFR.friendee_id
+                WHERE PFR.friender_id = %s
+            ''', [user_id])
+            requests = cursor.fetchall()
+            return requests
+
 def get_user_by_id(user_id: int) -> dict[str, Any] | None: #settings(nicole)
-   pool = get_pool()
-   with pool.connection() as connection:
-       with connection.cursor(row_factory=dict_row) as cursor:
-           cursor.execute('''
-                           SELECT
-                               user_id,
-                               username,
-                               first_name,
-                               last_name,
-                               email,
-                               concentration,
-                               hash_pass AS hashed_password
-                           FROM
-                               Users
-                           WHERE
-                               user_id = %s
-                           ''', [user_id])
-           user = cursor.fetchone()
-           if user is None:
-               return None
-           else:
-               return user
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT
+                                user_id,
+                                username,
+                                first_name,
+                                last_name,
+                                email,
+                                concentration,
+                                hash_pass AS hashed_password
+                            FROM
+                                Users
+                            WHERE
+                                user_id = %s
+                            ''', [user_id])
+            user = cursor.fetchone()
+            if user is None:
+                return None
+            else:
+                return user
 
 
 def update_user_settings(user_id: int, email: str, first_name: str, last_name: str):
-   pool = get_pool()
-   with pool.connection() as connection:
-       with connection.cursor() as cursor:
-           cursor.execute('''
-                           UPDATE Users
-                           SET email = %s, first_name = %s, last_name = %s
-                           WHERE user_id = %s
-                           ''', [email, first_name, last_name, user_id])
-           connection.commit()
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            UPDATE Users
+                            SET email = %s, first_name = %s, last_name = %s
+                            WHERE user_id = %s
+                            ''', [email, first_name, last_name, user_id])
+            connection.commit()
 
 
 def update_username(user_id: int, new_username: str):
-   pool = get_pool()
-   with pool.connection() as connection:
-       with connection.cursor() as cursor:
-           cursor.execute('''
-                           UPDATE Users
-                           SET username = %s
-                           WHERE user_id = %s
-                           ''', [new_username, user_id])
-           connection.commit()
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            UPDATE Users
+                            SET username = %s
+                            WHERE user_id = %s
+                            ''', [new_username, user_id])
+            connection.commit()
 
 
 def update_password(user_id: int, hashed_password: str):
-   pool = get_pool()
-   with pool.connection() as connection:
-       with connection.cursor() as cursor:
-           cursor.execute('''
-                           UPDATE Users
-                           SET hash_pass = %s
-                           WHERE user_id = %s
-                           ''', [hashed_password, user_id])
-           connection.commit()
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            UPDATE Users
+                            SET hash_pass = %s
+                            WHERE user_id = %s
+                            ''', [hashed_password, user_id])
+            connection.commit()
 
 
 def update_concentration(user_id: int, concentration: str):
-   pool = get_pool()
-   with pool.connection() as connection:
-       with connection.cursor() as cursor:
-           cursor.execute('''
-                           UPDATE Users
-                           SET concentration = %s
-                           WHERE user_id = %s
-                           ''', [concentration, user_id])
-           connection.commit()
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            UPDATE Users
+                            SET concentration = %s
+                            WHERE user_id = %s
+                            ''', [concentration, user_id])
+            connection.commit()
 
-def get_comments_by_user_id(user_id: int):
+def send_friend_request(friender_id, friendee_id):
     pool = get_pool()
     with pool.connection() as connection:
-        with connection.cursor(row_factory=dict_row) as cursor:
+        with connection.cursor() as cursor:
             cursor.execute('''
-                            SELECT 
-                                Comments.comment_id, 
-                                Comments.comment_author_id,
-                                Users.username AS author,
-                                Comments.datetime_posted,
-                                Comments.content,
-                                Comments.post_id
-                            FROM 
-                                Comments
-                            JOIN
-                                Users
-                            ON
-                                Comments.comment_author_id = Users.user_id
-                            WHERE
-                                comment_author_id = %s
-                            ORDER BY 
-                                datetime_posted ASC
-                            ''', [user_id])
-            comment = cursor.fetchall()
-            return comment
-        
-def get_all_users_except_current(user_id: int):
+                            INSERT INTO pending_friend_requests (friender_id, friendee_id)
+                            VALUES (%s, %s)
+                            RETURNING friend_request_id
+                        ''', [friender_id, friendee_id])
+            return cursor.fetchone()
+
+def get_pending_friend_request(friender_id, friendee_id):
     pool = get_pool()
     with pool.connection() as connection:
-        with connection.cursor(row_factory=dict_row) as cursor:
+        with connection.cursor() as cursor:
             cursor.execute('''
-                SELECT  
-                    user_id, 
-                    username,
-                    concentration
-                FROM 
-                    Users
-                WHERE 
-                    user_id != %s
-            ''', [user_id])
-            users = cursor.fetchall()
-            return users
+                SELECT friend_request_id
+                FROM pending_friend_requests
+                WHERE friender_id = %s AND friendee_id = %s
+            ''', [friender_id, friendee_id])
+            return cursor.fetchone()
+
+def are_users_friends(user_id, friend_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT 1
+                FROM User_Friends
+                WHERE user_id = %s AND friend_user_id = %s
+            ''', [user_id, friend_id])
+            return cursor.fetchone()
+
+def cancel_friend_request(friender_id, friendee_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                DELETE FROM pending_friend_requests
+                WHERE friender_id = %s AND friendee_id = %s
+            ''', [friender_id, friendee_id])
+            return True
+
+def accept_friend_request(friender_id, friendee_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                INSERT INTO User_Friends (user_id, friend_user_id)
+                VALUES (%s, %s)
+            ''', [friender_id, friendee_id])
+            cursor.execute('''
+                INSERT INTO User_Friends (user_id, friend_user_id)
+                VALUES (%s, %s)
+            ''', [friendee_id, friender_id])
+            cursor.execute('''
+                DELETE FROM pending_friend_requests
+                WHERE friender_id = %s AND friendee_id = %s
+            ''', [friender_id, friendee_id])
+            return True
+
+def delete_friend_request(friender_id, friendee_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                DELETE FROM pending_friend_requests
+                WHERE friender_id = %s AND friendee_id = %s
+            ''', [friender_id, friendee_id])
+            return True
+
+def unfriend(user_id, friend_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                DELETE FROM User_Friends
+                WHERE user_id = %s AND friend_user_id = %s
+            ''', [user_id, friend_id])
+            cursor.execute('''
+                DELETE FROM User_Friends
+                WHERE user_id = %s AND friend_user_id = %s
+            ''', [friend_id, user_id])
+            return True

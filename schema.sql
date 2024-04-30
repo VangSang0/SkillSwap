@@ -82,3 +82,8 @@ CREATE TABLE IF NOT EXISTS Post_Likes(
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 )
 
+CREATE TABLE IF NOT EXISTS pending_friend_requests(
+    friend_request_id  SERIAL,
+    friender_id        INTEGER      NOT NULL,
+    friendee_id        INTEGER      NOT NULL
+)
