@@ -68,21 +68,22 @@ function getCSRFToken() {
 // For profile replies button
 
 document.addEventListener('DOMContentLoaded', function() {
-    const profilePostbtn = document.getElementById('profile_post_btn');
-    const profileRepliesbtn = document.getElementById('profile_replies_btn');
-    const profilePosts = document.getElementById('posts-tab'); 
-    const profileReplies = document.getElementById('replies-tab');
-
-    profilePostbtn.addEventListener('click', function() {
-        profilePosts.classList.remove('hidden');
-        profileReplies.classList.add('hidden');
-    });
-
-    profileRepliesbtn.addEventListener('click', function() {
-        profilePosts.classList.add('hidden');
-        profileReplies.classList.remove('hidden');
-    });
+    openBtn(evt, 'MyPosts');
 });
 
+function openBtn(evt, TabName){
+    var i, btnContent, profileBtns;
 
+    btnContent = document.getElementsByClassName("btnContent");
+    for(i = 0; i < btnContent.length; i++){
+        btnContent[i].style.display = "none";
+    }
 
+    profileBtns = document.getElementsByClassName("profile-btns");
+    for(i = 0; i < profileBtns.length; i++){
+        profileBtns[i].className = profileBtns[i].className.replace(" active", "");
+    }
+
+    document.getElementById(TabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
