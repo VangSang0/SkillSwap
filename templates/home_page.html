@@ -60,16 +60,18 @@
 {% endblock %}
 
 {% block rightcontent %}
-    <div class="recomm-container">
-        <div class="recomm-user">
-            <i class="bi bi-person-circle"></i>
-            <span>username</span>
-        </div>
-        <div class="recomm-text">
-            <p class="recomm-content">Grade Year: jinja variable</p>
-            <p class="recomm-content">Concentration: jinja variable</p>
-            <p class="recomm-content">Completed: jinja variable</p>
-            <p class="recomm-content">Enrolled: jinja variable</p>
-        </div>    
+    <div class="recomm-header">
+        <h4>Recommended Users</h4>
     </div>
+    {% for users in users_minus_current %}
+        <div class="recomm-container">
+            <div class="recomm-user">
+                <i class="bi bi-person-circle"></i>
+                <span>{{ users.username }}</span>
+            </div>
+            <div class="recomm-text">
+                <p class="recomm-content">Concentration: {{ users.concentration }}</p>
+            </div>    
+        </div>
+    {% endfor %}
 {% endblock %}
