@@ -13,10 +13,10 @@
                     <div>
                         <i class="bi bi-person-circle"></i>
                         <!-- Link to view user profile with custom class -->
-                        <a href="{{ url_for('profile', username=user.username) }}" class="text-decoration-none black-link">{{ user.username }}</a>
+                        <a href="{{ url_for('view_profile', user_id = user.user_id) }}" class="text-decoration-none black-link">{{ user.username }}</a>
                     </div>
                     <!-- Button to add friend -->
-                    <form action="{{ url_for('add_friend') }}" method="POST">
+                    <form action="{{ url_for('send_friend_request') }}" method="POST">
                         <input type="hidden" name="friend_id" value="{{ user.user_id }}">
                         <button type="submit" class="btn btn-success btn-sm">Add Friend</button>
                     </form>
