@@ -129,8 +129,9 @@ def profile():
     user = database_methods.get_user_information_by_id(user_id)
     post = database_methods.get_posts_by_user_id(user_id)
     comment = database_methods.get_comments_by_user_id(user_id)
+    liked_content = other_methods.posts_id_of_liked_content(session['user_id'])
     
-    return render_template('profile.html', user=user, post=post, comment=comment)
+    return render_template('profile.html', user=user, post=post, comment=comment, liked_content=liked_content)
 
 
 @app.post('/search')
@@ -195,7 +196,8 @@ def post(post_id):
     post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     for comment in comments:
         comment['datetime_posted'] = other_methods.format_datetime(comment['datetime_posted'])
-    return render_template('posts.html', post=post, comments=comments, current_user=current_user)
+    liked_content = other_methods.posts_id_of_liked_content(session['user_id'])
+    return render_template('posts.html', post=post, comments=comments, current_user=current_user, liked_content=liked_content)
 
 
 @app.post('/delete-post')
@@ -440,9 +442,10 @@ def view_profile(user_id):
     if database_methods.are_users_friends(session['user_id'], user_id) and database_methods.are_users_friends(user_id, session['user_id']):
         is_friend = True
     
+    liked_content = other_methods.posts_id_of_liked_content(session['user_id'])
 
 
-    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested, comment=comment)
+    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested, comment=comment, liked_content=liked_content)
 
 @app.post('/send-friend-request')
 @other_methods.check_user
