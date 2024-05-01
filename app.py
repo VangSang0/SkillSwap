@@ -416,6 +416,7 @@ def view_profile(user_id):
     for post in users_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     
+    comment = database_methods.get_comments_by_user_id(user_id)
     pending_friend_request = database_methods.get_pending_friend_request(session['user_id'], user_id)
     if pending_friend_request:
         is_pending_friend_request = True
@@ -434,7 +435,7 @@ def view_profile(user_id):
     
 
 
-    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested)
+    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested, comment=comment)
 
 @app.post('/send-friend-request')
 @other_methods.check_user
