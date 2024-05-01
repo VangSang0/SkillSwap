@@ -520,7 +520,8 @@ def search_users(username: str) -> list[dict[str, Any]]:
     with pool.connection() as connection:
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
-                SELECT * FROM Users
+                SELECT user_id, username
+                FROM Users
                 WHERE username ILIKE %s
             ''', [f"%{username}%"])
             users = cursor.fetchall()
