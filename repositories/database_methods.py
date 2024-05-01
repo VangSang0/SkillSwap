@@ -3,8 +3,6 @@ from repositories.db import get_pool
 from psycopg.rows import dict_row
 import psycopg
 from typing import Tuple
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
 
 
 def does_user_exist(username: str) -> bool:
@@ -427,39 +425,39 @@ def get_user_friends(user_id):
             friends = cursor.fetchall()
             return friends
         
-def add_friend(user_id, friend_id):
-    pool = get_pool()
-    try:
-        with pool.connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('INSERT INTO User_Friends (user_id, friend_user_id) VALUES (%s, %s)', (user_id, friend_id))
-    except Exception as e:
-        raise e
+# def add_friend(user_id, friend_id):
+#     pool = get_pool()
+#     try:
+#         with pool.connection() as connection:
+#             with connection.cursor() as cursor:
+#                 cursor.execute('INSERT INTO User_Friends (user_id, friend_user_id) VALUES (%s, %s)', (user_id, friend_id))
+#     except Exception as e:
+#         raise e
 
 
-def check_friendship(user_id, friend_id):
-    pool = get_pool()
-    with pool.connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute('SELECT 1 FROM User_Friends WHERE user_id = %s AND friend_user_id = %s', (user_id, friend_id))
-            return cursor.fetchone() is not None
+# def check_friendship(user_id, friend_id):
+#     pool = get_pool()
+#     with pool.connection() as connection:
+#         with connection.cursor() as cursor:
+#             cursor.execute('SELECT 1 FROM User_Friends WHERE user_id = %s AND friend_user_id = %s', (user_id, friend_id))
+#             return cursor.fetchone() is not None
 
 
-def get_incoming_friend_requests(user_id):
-    pool = get_pool()
-    with pool.connection() as connection:
-        with connection.cursor(row_factory=dict_row) as cursor:
-            cursor.execute('''
-                SELECT U.user_id, U.username, COUNT(MF.friend_user_id) AS mutual_connections
-                FROM Users U
-                JOIN User_Friends UF ON U.user_id = UF.user_id
-                LEFT JOIN User_Friends MF ON U.user_id = MF.user_id AND MF.friend_user_id = UF.friend_user_id
-                WHERE UF.friend_user_id = %s AND MF.friend_user_id IS NULL
-                GROUP BY U.user_id
-            ''', [user_id])
-            requests = cursor.fetchall()
-            return requests
-        
+# def get_incoming_friend_requests(user_id):
+#     pool = get_pool()
+#     with pool.connection() as connection:
+#         with connection.cursor(row_factory=dict_row) as cursor:
+#             cursor.execute('''
+#                 SELECT U.user_id, U.username, COUNT(MF.friend_user_id) AS mutual_connections
+#                 FROM Users U
+#                 JOIN User_Friends UF ON U.user_id = UF.user_id
+#                 LEFT JOIN User_Friends MF ON U.user_id = MF.user_id AND MF.friend_user_id = UF.friend_user_id
+#                 WHERE UF.friend_user_id = %s AND MF.friend_user_id IS NULL
+#                 GROUP BY U.user_id
+#             ''', [user_id])
+#             requests = cursor.fetchall()
+#             return requests
+
 def get_user_by_id(user_id: int) -> dict[str, Any] | None: #settings(nicole)
    pool = get_pool()
    with pool.connection() as connection:
