@@ -116,11 +116,9 @@ def home_page():
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     
     current_user = database_methods.get_user_by_id(session['user_id'])
-    users_minus_current = database_methods.get_all_users_except_current(session['user_id'])
-    random.shuffle(users_minus_current)
-    users_minus_current = users_minus_current[:5]
 
-    return render_template('home_page.html', all_posts=all_posts, current_user=current_user, users_minus_current=users_minus_current)
+    user_recs = database_methods.get_users_not_friends_with_same_concentration(session['user_id'])
+    return render_template('home_page.html', all_posts=all_posts, current_user=current_user, user_recs=user_recs)
 
 
 @app.get('/profile-page')
