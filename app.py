@@ -131,7 +131,7 @@ def profile():
     
     return render_template('profile.html', user=user, post=post, comment=comment)
 
-  
+
 @app.post('/search')
 @other_methods.check_user
 def search():
@@ -182,7 +182,7 @@ def friends():
     incoming_requests = database_methods.get_incoming_friend_requests(user_id)
     # Retrieve outgoing friend requests
     pending_requests = database_methods.get_outgoing_friend_requests(user_id)
-    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
+    return render_template('friends_page.html', friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
 
 
 @app.post('/user-post')
@@ -465,8 +465,6 @@ def view_profile(user_id):
 def send_friend_request():
     friender_id = session['user_id']
     friendee_id = request.form.get('friend_id')
-    print(friender_id)
-    print(friendee_id)
     if not friendee_id:
         flash("Unable to send Friend Request at this time! Please try again later!")
         return redirect(url_for('view_profile'), user_id=request.form.get('friend_id'))
