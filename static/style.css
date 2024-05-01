@@ -157,6 +157,8 @@
 .view-profile{
     display: flex;
     flex-direction: row;
+    text-decoration: none;
+    color: black;
 
 }
 /* _________________________________________________________ */
