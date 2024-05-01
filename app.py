@@ -115,8 +115,9 @@ def home_page():
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     
     current_user = database_methods.get_user_by_id(session['user_id'])
+    liked_content = other_methods.posts_id_of_liked_content(session['user_id'])
 
-    return render_template('home_page.html', all_posts=all_posts, current_user=current_user)
+    return render_template('home_page.html', all_posts=all_posts, current_user=current_user, liked_content=liked_content)
 
 
 @app.get('/profile-page')

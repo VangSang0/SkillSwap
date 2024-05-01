@@ -52,9 +52,15 @@
                 </p>
                 <div class="post-btns">
                     <!-- Like button -->
-                    <button class="like-button" data-post-id="{{ post.post_id }}" onclick="likePost(this)">
-                        <i class="bi bi-heart"></i>
-                    </button>
+                    {% if post.post_id in liked_content %}
+                        <button class="like-button" data-post-id="{{ post.post_id }}" onclick="likePost(this)">
+                            <i class="bi bi-heart bi-heart-fill"></i>
+                        </button>
+                    {% else %}
+                        <button class="like-button" data-post-id="{{ post.post_id }}" onclick="likePost(this)">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                    {% endif %}
                     <p>{{ post.num_likes }}</p>
                     <i class="bi bi-chat-square-text"></i>
                     <p>{{ post.num_comments }}</p>
