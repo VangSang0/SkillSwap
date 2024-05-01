@@ -245,15 +245,7 @@ def edit_post_submit():
     database_methods.edit_post(post_id, post_content)
     return redirect(url_for('home_page'))
 
-@app.get('/users-posts')
-@other_methods.check_user
-def user_posts():
-    user_id = session['user_id']
-    user = database_methods.get_user_by_id(user_id)
-    user_posts = database_methods.get_posts_by_user_id(user_id)
-    for post in user_posts:
-        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    return render_template('users_posts.html', user=user, user_posts=user_posts)
+
 
 @app.post('/comment')
 @other_methods.check_user
