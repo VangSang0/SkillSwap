@@ -410,23 +410,6 @@ def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
             user = cursor.fetchone()
             return user
 
-def get_all_users_except_current(user_id: int):
-    pool = get_pool()
-    with pool.connection() as connection:
-        with connection.cursor(row_factory=dict_row) as cursor:
-            cursor.execute('''
-                SELECT 
-                    user_id,
-                    username,
-                    concentration
-                FROM
-                    Users
-                WHERE
-                    user_id != %s
-            ''', [user_id])
-            users = cursor.fetchall()
-            return users
-        
 def get_comments_by_user_id(user_id: int):
     pool = get_pool()
     with pool.connection() as connection:
@@ -650,3 +633,33 @@ def unfriend(user_id, friend_id):
                 WHERE user_id = %s AND friend_user_id = %s
             ''', [friend_id, user_id])
             return True
+
+def get_users_not_friends_with_same_concentration(user_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT 
+                    U.user_id,
+                    U.username,
+                    U.concentration
+                FROM 
+                    Users U
+                WHERE 
+                    U.user_id != %s AND U.concentration = (
+                    SELECT 
+                        concentration
+                    FROM 
+                        Users
+                    WHERE
+                        user_id = %s
+                ) AND U.user_id NOT IN (
+                    SELECT 
+                        friend_user_id
+                    FROM 
+                        User_Friends
+                    WHERE user_id = %s
+                )
+            ''', [user_id, user_id, user_id])
+            users = cursor.fetchall()
+            return users
