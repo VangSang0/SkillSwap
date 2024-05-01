@@ -378,9 +378,9 @@ footer{
     background-color: rgba(51, 124, 150, 0.662);
     border-radius: 5px;
     padding: 5px;
-    margin-left: 580px;
     padding-right: 18px;
     padding-left: 18px;
+    float:right;
 }
 
 .click-post-comm:hover{
@@ -397,8 +397,7 @@ footer{
     padding: 6px;
     padding-right:15px;
     padding-left: 20px;
-    margin-left: 620px;
-    
+    float:right;
 }
 
 .click-post:hover{
@@ -410,17 +409,21 @@ footer{
 #delete-button{
     background-color: rgba(255, 0, 0, 0.435);
     border: none;
+    float: right;
 }
 
 #edit-button, #edit-post-button{
     background-color:  rgba(255, 0, 0, 0.435);
     border: none;
+    float: right;
 }
 #edit-post-button{
-    margin-right:10px;
+    margin-right:4px;
+    float: right;
 }
 #edit-button{
-    margin-right: 10px;
+    margin-right: 4px;
+    float: right;
 }
 
 
