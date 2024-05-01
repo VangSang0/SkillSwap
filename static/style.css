@@ -154,6 +154,11 @@
     font-weight: bold;
 }
 
+.view-profile{
+    display: flex;
+    flex-direction: row;
+
+}
 /* _________________________________________________________ */
 
 footer{

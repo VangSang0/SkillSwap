@@ -25,10 +25,10 @@
         <div class="post">
             <div class="post-header">
                 {% if post.post_author_id != current_user.user_id %}
-                <a href="/view-profile/{{ post.post_author_id }}" class="view-profile">
-                    <i class="bi bi-person-circle"></i>
-                    <h6 class="poster">{{ post.author }}</h6>
-                </a>
+                    <a href="/view-profile/{{ post.post_author_id }}" class="view-profile">
+                        <i class="bi bi-person-circle"></i>
+                        <h6 class="poster">{{ post.author }}</h6>
+                    </a>
                 {% else %}
                     <i class="bi bi-person-circle"></i>
                     <h6 class="poster">{{ post.author }}</h6>
