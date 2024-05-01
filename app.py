@@ -149,7 +149,42 @@ def search_users():
     else:
         return render_template('search_results.html', users=[], query=query)
 
+@app.route('/add_friend', methods=['POST'])
+def add_friend():
+    if request.method == 'POST':
+        try:
+            friend_id = int(request.form.get('friend_id'))
+            # Get the current user's ID from the session (assuming you have a way to store user ID in session)
+            current_user_id = session.get('user_id')
 
+            if not current_user_id:
+                flash('User not authenticated. Please sign in.', 'error')
+                return redirect(url_for('sign_in'))
+
+            # Check if the friendship already exists
+            if database_methods.check_friendship(current_user_id, friend_id):
+                flash('Friendship already exists.', 'info')
+            else:
+                # Add friend relationship to the database
+                database_methods.add_friend(current_user_id, friend_id)
+                flash('Friend added successfully.', 'success')
+
+        except (ValueError, TypeError):
+            flash('Invalid request.', 'error')
+
+    return redirect(url_for('friends_page'))
+
+@app.route('/friends_page')
+def friends_page():
+    # Retrieve user's friends and incoming friend requests
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('User not authenticated. Please sign in.', 'error')
+        return redirect(url_for('sign_in'))
+
+    friends = database_methods.get_user_friends(user_id)
+    incoming_requests = database_methods.get_incoming_friend_requests(user_id)
+    return render_template('friends_page.html', friends=friends, incoming_requests=incoming_requests)
 
 @app.get('/friends-page')
 @other_methods.check_user
@@ -157,11 +192,12 @@ def friends():
     user_id = session['user_id']
     if 'user_id' not in session:
         return redirect(url_for('sign_in'))
-    # Retrieve user's friends from the database
+
     friends = database_methods.get_user_friends(user_id)
-    # Retrieve incoming friend requests
+
     incoming_requests = database_methods.get_incoming_friend_requests(user_id)
     return render_template('friends_page.html',friends=friends, incoming_requests=incoming_requests)
+
 
 @app.post('/user-post')
 @other_methods.check_user
