@@ -48,6 +48,7 @@ def signing_up():
     user_email = request.form.get('email')
     first_name = request.form.get('first-name')
     last_name = request.form.get('last-name')
+    concentration = request.form.get('concentration')   
     username = request.form.get('username')
     password = request.form.get('password')
     confirm_password = request.form.get('confirm-password')
@@ -87,7 +88,7 @@ def signing_up():
         return redirect(url_for('sign_up_tab'))
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = database_methods.create_user(first_name, last_name, user_email, username, hashed_password)
+    new_user = database_methods.create_user(first_name, last_name, user_email, username, hashed_password, concentration)
 
     flash(f"Account created successfully {new_user['username']}! Please sign in to continue.")
 
@@ -112,7 +113,8 @@ def home_page():
     
     current_user = database_methods.get_user_by_id(session['user_id'])
 
-    return render_template('home_page.html', all_posts=all_posts, current_user=current_user)
+    user_recs = database_methods.get_users_not_friends_with_same_concentration(session['user_id'])
+    return render_template('home_page.html', all_posts=all_posts, current_user=current_user, user_recs=user_recs)
 
 
 @app.get('/profile-page')
@@ -125,9 +127,11 @@ def profile():
     user_id = session.get('user_id')
     user = database_methods.get_user_information_by_id(user_id)
     post = database_methods.get_posts_by_user_id(user_id)
+    comment = database_methods.get_comments_by_user_id(user_id)
+    
+    return render_template('profile.html', user=user, post=post, comment=comment)
 
-    return render_template('profile.html', user=user, post=post)
-
+  
 @app.post('/search')
 @other_methods.check_user
 def search():
@@ -274,15 +278,7 @@ def edit_post_submit():
     database_methods.edit_post(post_id, post_content)
     return redirect(url_for('home_page'))
 
-@app.get('/users-posts')
-@other_methods.check_user
-def user_posts():
-    user_id = session['user_id']
-    user = database_methods.get_user_by_id(user_id)
-    user_posts = database_methods.get_posts_by_user_id(user_id)
-    for post in user_posts:
-        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    return render_template('users_posts.html', user=user, user_posts=user_posts)
+
 
 @app.post('/comment')
 @other_methods.check_user
@@ -443,6 +439,7 @@ def view_profile(user_id):
     for post in users_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     
+    comment = database_methods.get_comments_by_user_id(user_id)
     pending_friend_request = database_methods.get_pending_friend_request(session['user_id'], user_id)
     if pending_friend_request:
         is_pending_friend_request = True
@@ -461,7 +458,7 @@ def view_profile(user_id):
     
 
 
-    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested)
+    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested, comment=comment)
 
 @app.post('/send-friend-request')
 @other_methods.check_user

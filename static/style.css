@@ -5,6 +5,7 @@
     --websiteblue: rgb(52,119,141);
     --pfpgray: rgb(217,217,217);
     --darkgray:rgb(194,194,194);
+    --lightblue: rgba(154, 177, 185, 0.726);
 }
 
 .navbar{
@@ -42,7 +43,7 @@
 .main-body{
     display: flex;
     flex-direction: row;
-    height: 100vh;
+    height: 200vh;
 }
 
 .main-nav{
@@ -97,6 +98,7 @@
     height: 30px;
     width:70px;
     margin-bottom: 10px;
+    border:none;
 }
 
 #post-content{
@@ -105,15 +107,23 @@
     padding-left: 20px;
     padding-bottom: 10px;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
 }
 
 .post-btns{
     font-size: 20px;
     margin-right: 620px;
     margin-left: 15px;
+    
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+
+.recomm-header{
+    margin:20px;
+    text-align: center;
 }
 
 .recomm-container{
@@ -124,8 +134,15 @@
 }
 
 .recomm-user{
+    display: flex;
+    flex-direction: row;
     background-color: var(--darkgray);
     padding: 10px;
+    
+}
+
+.recomm-user i{
+    margin-right: 10px;
 }
 
 .recomm-text{
@@ -137,6 +154,13 @@
     font-weight: bold;
 }
 
+.view-profile{
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    color: black;
+
+}
 /* _________________________________________________________ */
 
 footer{
@@ -179,7 +203,7 @@ footer{
 .form-control::placeholder{
     text-indent:1px;
 }
-#username1, #password, #email, #confirm-password, #first-name, #last-name, #username{
+#username1, #password, #email, #confirm-password, #first-name, #last-name, #username, #concentration{
     padding-left: 30px;
     border-radius: 10px;
 }
@@ -308,7 +332,7 @@ footer{
  }
  
  
- button:hover {
+ /* button:hover {
     background-color: #0056a3;
  }
  
@@ -316,7 +340,7 @@ footer{
  button:active {
     background-color: #003c74;
  }
- 
+  */
  
  
 
@@ -348,14 +372,56 @@ footer{
     color: gray;
 }
 
-.click-post{
+.click-post-comm{
     text-decoration: none;
-    color: black;
-}
-.click-post:hover{
-    text-decoration: underline;
+    color:white;
+    background-color: rgba(51, 124, 150, 0.662);
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 580px;
+    padding-right: 18px;
+    padding-left: 18px;
 }
 
+.click-post-comm:hover{
+    text-decoration: underline;
+    background-color: rgba(51, 123, 150, 0.463);
+    color:white;
+}
+
+.click-post{
+    text-decoration: none;
+    color:white;
+    background-color: rgba(51, 124, 150, 0.662);
+    border-radius: 5px;
+    padding: 6px;
+    padding-right:15px;
+    padding-left: 20px;
+    margin-left: 620px;
+    
+}
+
+.click-post:hover{
+    text-decoration: underline;
+    background-color: rgba(51, 123, 150, 0.463);
+    color:white;
+}
+
+#delete-button{
+    background-color: rgba(255, 0, 0, 0.435);
+    border: none;
+}
+
+#edit-button, #edit-post-button{
+    background-color:  rgba(255, 0, 0, 0.435);
+    border: none;
+}
+#edit-post-button{
+    margin-right:10px;
+}
+#edit-button{
+    margin-right: 10px;
+}
 
 
 /* For alert message */
@@ -370,16 +436,43 @@ footer{
     color: gray;
 }
 
+/* home */
+.post-btns-home{
+    font-size: 20px;
+    margin-right: 620px;
+    margin-left: 15px;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.post-btns-home p{
+    margin-right: 10px;
+}
 
 /* This is for the like button */
 .like-button {
     background-color: transparent;
     border: none; 
     cursor: pointer; 
+    margin:0px;
+    padding: 0px;
+    margin-bottom: 10px;
 }
+
 
 .like-button i.bi-heart-fill {
     color: #ff0000; 
+}
+.like-button.hover {
+    background-color: none;
+}
+#num_of_likes{
+    margin-right:5px;
+}
+
+#share-icon{
+    outline: solid black;
 }
 
 /* For profile page */
@@ -401,6 +494,23 @@ footer{
     margin-right: 300px;
 }
 
+.profile-btns{
+    outline: none;
+    border: none;
+    color: black;
+    font-size: 18px;
+    background-color: transparent;
+    overflow: hidden;
+}
+
+.profile-btns:hover{
+    background-color: transparent;
+}
+
+.profile-btns.active{
+    background-color: var(--pfpgray);
+}
+
 #edit-profile-btn{
     background-color: var(--websiteblue);
     color: white;
@@ -414,8 +524,8 @@ footer{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    margin-left: 300px;
-    margin-right: 300px;
+    margin-left: 250px;
+    margin-right: 250px;
     border-bottom: solid;
     border-bottom-color: var(--darkgray);
 }
@@ -423,6 +533,55 @@ footer{
 .profile-sections a{
     text-decoration: none;
     color: black;
+}
+
+/* For replies under profile page */
+.comment{
+    background-color: var(--lightblue);
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.comment-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    padding: 0.25rem;
+}
+
+.comment-header i {
+    margin-right: 0.5rem;
+}
+
+.commenter{
+    margin: 0;
+    font-weight: bold;
+    padding-bottom: 0.25rem;
+    margin-right: auto;
+}
+
+.comment-date{
+    font-size: 0.75rem;
+    color: gray;
+}
+
+#comment-content{
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
+}
+
+
+.hidden{
+    display: none;
 }
 
 /* my posts page */
@@ -434,3 +593,28 @@ footer{
 .black-link {
     color: black;
 }
+
+/* comments under a post */
+.user-comment{
+    margin-top:10px;
+    margin-left: 50px;
+}
+
+#comment-button{
+    margin-right: 300px;
+    width: 100px;
+}
+
+.comments{
+    margin: 20px;
+}
+
+#edit-comment-button, #delete-comment-button{
+    background-color:  rgba(255, 0, 0, 0.435);
+    border: none;
+    width: 70px;
+    margin-top:0px;
+    margin-bottom: 0px;
+    margin-left:660px;
+}
+

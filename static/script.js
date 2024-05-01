@@ -63,3 +63,27 @@ function getCSRFToken() {
     const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
     return csrfMetaTag ? csrfMetaTag.getAttribute('content') : '';
 }
+
+
+// For profile replies button
+
+document.addEventListener('DOMContentLoaded', function() {
+    openBtn(evt, 'MyPosts');
+});
+
+function openBtn(evt, TabName){
+    var i, btnContent, profileBtns;
+
+    btnContent = document.getElementsByClassName("btnContent");
+    for(i = 0; i < btnContent.length; i++){
+        btnContent[i].style.display = "none";
+    }
+
+    profileBtns = document.getElementsByClassName("profile-btns");
+    for(i = 0; i < profileBtns.length; i++){
+        profileBtns[i].className = profileBtns[i].className.replace(" active", "");
+    }
+
+    document.getElementById(TabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}

@@ -66,7 +66,7 @@
                 </form>
                 <form action="/delete-comment" method="post">
                     <input type="hidden" name="post_id" value="{{ post.post_id }}">
-                    <button name="delete" type="submit" class="btn btn-danger btn-sm" id="delete-button" value="{{ comment.comment_id }}" >Delete</button>
+                    <button name="delete" type="submit" class="btn btn-danger btn-sm" id="delete-comment-button" value="{{ comment.comment_id }}" >Delete</button>
                 </form>
             {% endif %}
         {% endfor %}
