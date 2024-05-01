@@ -430,3 +430,7 @@ footer{
     margin: 20px;
 }
 
+/* Making search results black hyperlink */
+.black-link {
+    color: black;
+}

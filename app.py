@@ -136,7 +136,7 @@ def search():
     if request.method == 'POST':
         query = request.form.get('query')
         return redirect(url_for('search_users', query=query))
-    return render_template('searchbar_page.html')
+    return render_template('search_results.html')
 
 # Example Flask route using the search_users function
 @app.get('/search')
@@ -145,9 +145,9 @@ def search_users():
     query = request.args.get('query', '')
     if query:
         users = database_methods.search_users(query)
-        return render_template('searchbar_page.html', users=users, query=query)
+        return render_template('search_results.html', users=users, query=query)
     else:
-        return render_template('searchbar_page.html', users=[], query=query)
+        return render_template('search_results.html', users=[], query=query)
 
 
 

@@ -515,13 +515,13 @@ def update_concentration(user_id: int, concentration: str):
            connection.commit()
 
 
-def search_users(query: str) -> list[dict[str, Any]]:
+def search_users(username: str) -> list[dict[str, Any]]:
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
                 SELECT * FROM Users
                 WHERE username ILIKE %s
-            ''', [f"%{query}%"])
+            ''', [f"%{username}%"])
             users = cursor.fetchall()
             return users
