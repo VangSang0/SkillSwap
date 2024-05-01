@@ -198,6 +198,16 @@ def friends():
     incoming_requests = database_methods.get_incoming_friend_requests(user_id)
     return render_template('friends_page.html',friends=friends, incoming_requests=incoming_requests)
 
+@app.route('/friend_profile/<user_id>')
+def friend_profile(user_id):
+    # Assuming you have a function to fetch friend details from the database
+    friend = database_methods.get_user_information_by_id(user_id)  # Implement this function in database_methods.py
+    if friend:
+        return render_template('friend_profile.html', friend=friend)
+    else:
+        # Handle case when friend is not found
+        return render_template('error.html', message='Friend not found'), 404
+
 
 @app.post('/user-post')
 @other_methods.check_user
