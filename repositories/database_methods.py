@@ -449,7 +449,7 @@ def get_user_friends(user_id):
                 GROUP BY U.user_id
             ''', [user_id])
             friends = cursor.fetchall()
-            return friend
+            return friends
 
 # def get_incoming_friend_requests(user_id):
 #     pool = get_pool()

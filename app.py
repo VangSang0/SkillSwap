@@ -182,7 +182,7 @@ def friends():
     incoming_requests = database_methods.get_incoming_friend_requests(user_id)
     # Retrieve outgoing friend requests
     pending_requests = database_methods.get_outgoing_friend_requests(user_id)
-    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
+    return render_template('friends_page.html', friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
 
 
 @app.post('/user-post')
