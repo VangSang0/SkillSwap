@@ -1,0 +1,83 @@
+{% extends "_layout.html" %}
+
+{% block maincontent%}
+    <div class="messages">
+        {% for message in get_flashed_messages() %}
+            {% if "Friend" in message %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="profile-bio">
+        <i class="bi bi-person-circle"></i>
+
+        <div class="user-bio">
+            <h2>{{ user.first_name }} {{ user.last_name}} </h2>
+            <h4>{{ user.concentration }} </h4>
+        </div>
+            {% if is_requested %}
+                <form action="/accept-friend-request" method="post">
+                    <button name="friend_id" id="edit-profile-btn" type="submit" value="{{ user.user_id }}" >Accept</button>
+                </form>
+                <form action="/delete-friend-request" method="post">
+                    <button name="friend_id" id="edit-profile-btn" type="submit" value="{{ user.user_id }}" >Delete</button>
+                </form>
+            {% elif is_pending_friend_request %}
+                <form action="/cancel-friend-request" method="post">
+                    <button name="friend_id" id="edit-profile-btn" type="submit" value="{{ user.user_id }}" >Cancel Friend Request</button>
+                </form>
+            {% elif is_friend %}
+                <form action="/unfriend" method="post">
+                    <button name="friend_id" id="edit-profile-btn" type="submit" value="{{ user.user_id }}" >Unfriend</button>
+                </form>
+            {% else %}
+                <form action="/send-friend-request" method="post">
+                    <button name="friend_id" id="edit-profile-btn" type="submit" value="{{ user.user_id }}" >Add Friend</button>
+                </form>
+            {% endif %}
+        
+    </div>
+
+    <div class="profile-sections">
+        <a href="#"><h4 id="profile_post_btn">Posts</h4></a>
+        <a href="#"><h4 id="profile_replies_btn">Replies</h4></a>
+        <!-- Under replies, users comments will appear -->
+    </div>
+    <div class="profile-content">
+
+        {% for post in posts %}
+            <div class="post">
+                <div class="post-header">
+                    <i class="bi bi-person-circle"></i>
+                    <h6 class="poster">{{ post.author }}</h6>
+                    <p class="post-date">{{ post.datetime_post }}</p>
+                </div>
+                <div class="post-area">
+                    <a href="/posts/{{ post.post_id }}" class="click-post">Click here to view the post</a>
+                    <!-- <h3 class="post-title">{{ post.title }}</h3> -->
+                    <p id="post-content">
+                        {{ post.post_content }}
+                    </p>
+                    <div class="post-btns">
+                        <i class="bi bi-heart"></i>
+                        <p>{{ post.num_likes }}</p>
+                        <i class="bi bi-chat-square-text"></i>
+                        <p>{{ post.num_comments }}</p>
+                        <i class="bi bi-share"></i>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        
+    </div>
+
+{% endblock %}
+
+{% block rightcontent %}
+
+
+
+{% endblock %}
