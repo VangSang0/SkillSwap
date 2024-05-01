@@ -3,6 +3,9 @@ from repositories.db import get_pool
 from psycopg.rows import dict_row
 import psycopg
 from typing import Tuple
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+# from app_factory import create_app, db
 
 
 def does_user_exist(username: str) -> bool:
@@ -510,3 +513,15 @@ def update_concentration(user_id: int, concentration: str):
                            WHERE user_id = %s
                            ''', [concentration, user_id])
            connection.commit()
+
+
+def search_users(query: str) -> list[dict[str, Any]]:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT * FROM Users
+                WHERE username ILIKE %s
+            ''', [f"%{query}%"])
+            users = cursor.fetchall()
+            return users

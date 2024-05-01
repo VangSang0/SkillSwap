@@ -12,8 +12,7 @@
                 <li>
                     <div>{{ user.username }}</div>
                     <!-- Display other user details as needed -->
-                    <!-- You can include mutual friends, add friend button, etc. -->
-                    <a href="{{ url_for('profile.view_profile', username=user.username) }}" class="btn btn-primary">View Profile</a>
+                    <a href="{{ url_for('profile', username=user.username) }}" class="btn btn-primary">View Profile</a>
                 </li>
             {% else %}
                 <li>No results found.</li>

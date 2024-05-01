@@ -1,26 +1,20 @@
-import os, re
-import random
+import os, re, random
+import psycopg, psycopg2
+from psycopg.rows import dict_row
+from psycopg2 import sql
+from psycopg2.extras import DictCursor
+from typing import Any, List
 from dotenv import load_dotenv
-from flask import Flask, abort, render_template, redirect, url_for, request, session, flash, Blueprint
-from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
+from flask import Flask, abort, render_template, redirect, url_for, request, session, flash, Blueprint, jsonify
 from repositories import database_methods, other_methods
 from flask import request, redirect, url_for, flash, session
 from app_factory import create_app
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
+# from app import app, db
 
 
 load_dotenv()
-app, bcrypt, db = create_app()
-
-
-friend_list = [
-    {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
-    {"name": "Emma Johnson", "occupation": "Model at Fashion", "distance": "800m away"},
-    {"name": "Nora Wilson", "occupation": "Writer at Newspaper", "distance": "2.5km away"},
-]
-
-
+app, bcrypt = create_app()
 
 @app.get('/')
 def sign_in():
@@ -136,6 +130,26 @@ def profile():
 
     return render_template('profile.html', user=user, post=post)
 
+@app.post('/search')
+@other_methods.check_user
+def search():
+    if request.method == 'POST':
+        query = request.form.get('query')
+        return redirect(url_for('search_users', query=query))
+    return render_template('searchbar_page.html')
+
+# Example Flask route using the search_users function
+@app.get('/search')
+@other_methods.check_user
+def search_users():
+    query = request.args.get('query', '')
+    if query:
+        users = database_methods.search_users(query)
+        return render_template('searchbar_page.html', users=users, query=query)
+    else:
+        return render_template('searchbar_page.html', users=[], query=query)
+
+
 
 @app.get('/friends-page')
 @other_methods.check_user
@@ -147,7 +161,7 @@ def friends():
     friends = database_methods.get_user_friends(user_id)
     # Retrieve incoming friend requests
     incoming_requests = database_methods.get_incoming_friend_requests(user_id)
-    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests)
+    return render_template('friends_page.html',friends=friends, incoming_requests=incoming_requests)
 
 @app.post('/user-post')
 @other_methods.check_user
@@ -398,21 +412,23 @@ def save_settings():
 
    return redirect(url_for('settings'))
 
+# @app.post('/search')
+# @other_methods.check_user
+# def search():
+#     if request.method == 'POST':
+#         query = request.form.get('query')
+#         return redirect(url_for('search_users', query=query))
+#     return render_template('searchbar_page.html')
 
-# Define the search_users route to handle GET requests using @app.get()
-@app.get('/search')
-def search_users():
-    query = request.args.get('query', '')
-
-    if query:
-        # Construct SQL query for case-insensitive username search
-        search_query = f"%{query}%"
-        sql = text("SELECT * FROM Users WHERE username ILIKE :query")
-        result = db.engine.execute(sql, query=search_query)
-        users = [dict(row) for row in result]
-    else:
-        users = []
-
-    return render_template('search_results.html', users=users, query=query)
+# # Example Flask route using the search_users function
+# @app.get('/search')
+# @other_methods.check_user
+# def search_users():
+#     query = request.args.get('query', '')
+#     if query:
+#         users = database_methods.search_users(query)
+#         return render_template('searchbar_page.html', users=users, query=query)
+#     else:
+#         return render_template('searchbar_page.html', users=[], query=query)
 
 
