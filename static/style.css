@@ -377,6 +377,8 @@ footer{
     border-radius: 5px;
     padding: 5px;
     margin-left: 580px;
+    padding-right: 18px;
+    padding-left: 18px;
 }
 
 .click-post-comm:hover{
@@ -390,8 +392,11 @@ footer{
     color:white;
     background-color: rgba(51, 124, 150, 0.662);
     border-radius: 5px;
-    padding: 5px;
+    padding: 6px;
+    padding-right:15px;
+    padding-left: 20px;
     margin-left: 620px;
+    
 }
 
 .click-post:hover{
@@ -408,6 +413,12 @@ footer{
 #edit-button, #edit-post-button{
     background-color:  rgba(255, 0, 0, 0.435);
     border: none;
+}
+#edit-post-button{
+    margin-right:10px;
+}
+#edit-button{
+    margin-right: 10px;
 }
 
 
