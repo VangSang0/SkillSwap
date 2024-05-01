@@ -5,6 +5,7 @@
     --websiteblue: rgb(52,119,141);
     --pfpgray: rgb(217,217,217);
     --darkgray:rgb(194,194,194);
+    --lightblue: rgba(154, 177, 185, 0.726);
 }
 
 .navbar{
@@ -97,6 +98,7 @@
     height: 30px;
     width:70px;
     margin-bottom: 10px;
+    border:none;
 }
 
 #post-content{
@@ -118,6 +120,7 @@
     justify-content: space-around;
 }
 
+
 .recomm-header{
     margin:20px;
     text-align: center;
@@ -131,8 +134,15 @@
 }
 
 .recomm-user{
+    display: flex;
+    flex-direction: row;
     background-color: var(--darkgray);
     padding: 10px;
+    
+}
+
+.recomm-user i{
+    margin-right: 10px;
 }
 
 .recomm-text{
@@ -315,7 +325,7 @@ footer{
  }
  
  
- button:hover {
+ /* button:hover {
     background-color: #0056a3;
  }
  
@@ -323,7 +333,7 @@ footer{
  button:active {
     background-color: #003c74;
  }
- 
+  */
  
  
 
@@ -355,19 +365,45 @@ footer{
     color: gray;
 }
 
+.click-post-comm{
+    text-decoration: none;
+    color:white;
+    background-color: rgba(51, 124, 150, 0.662);
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 580px;
+}
+
+.click-post-comm:hover{
+    text-decoration: underline;
+    background-color: rgba(51, 123, 150, 0.463);
+    color:white;
+}
+
 .click-post{
     text-decoration: none;
-    color: black;
-    background-color: rgb(180, 177, 177);
-    border-radius: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
-
+    color:white;
+    background-color: rgba(51, 124, 150, 0.662);
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 620px;
 }
+
 .click-post:hover{
     text-decoration: underline;
+    background-color: rgba(51, 123, 150, 0.463);
+    color:white;
 }
 
+#delete-button{
+    background-color: rgba(255, 0, 0, 0.435);
+    border: none;
+}
+
+#edit-button, #edit-post-button{
+    background-color:  rgba(255, 0, 0, 0.435);
+    border: none;
+}
 
 
 /* For alert message */
@@ -382,16 +418,43 @@ footer{
     color: gray;
 }
 
+/* home */
+.post-btns-home{
+    font-size: 20px;
+    margin-right: 620px;
+    margin-left: 15px;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.post-btns-home p{
+    margin-right: 10px;
+}
 
 /* This is for the like button */
 .like-button {
     background-color: transparent;
     border: none; 
     cursor: pointer; 
+    margin:0px;
+    padding: 0px;
+    margin-bottom: 10px;
 }
+
 
 .like-button i.bi-heart-fill {
     color: #ff0000; 
+}
+.like-button.hover {
+    background-color: none;
+}
+#num_of_likes{
+    margin-right:5px;
+}
+
+#share-icon{
+    outline: solid black;
 }
 
 /* For profile page */
@@ -417,7 +480,7 @@ footer{
     outline: none;
     border: none;
     color: black;
-    font-size: 20px;
+    font-size: 18px;
     background-color: transparent;
     overflow: hidden;
 }
@@ -456,7 +519,7 @@ footer{
 
 /* For replies under profile page */
 .comment{
-    background-color: var(--overallgray);
+    background-color: var(--lightblue);
     border-radius: 10px;
     margin: 20px;
     padding: 10px;
@@ -503,13 +566,31 @@ footer{
     display: none;
 }
 
-
-
-
-
-
 /* my posts page */
 #my_post_username{
     margin: 20px;
 }
 
+/* comments under a post */
+.user-comment{
+    margin-top:10px;
+    margin-left: 50px;
+}
+
+#comment-button{
+    margin-right: 300px;
+    width: 100px;
+}
+
+.comments{
+    margin: 20px;
+}
+
+#edit-comment-button, #delete-comment-button{
+    background-color:  rgba(255, 0, 0, 0.435);
+    border: none;
+    width: 70px;
+    margin-top:0px;
+    margin-bottom: 0px;
+    margin-left:660px;
+}
