@@ -449,7 +449,22 @@ def get_user_friends(user_id):
                 GROUP BY U.user_id
             ''', [user_id])
             friends = cursor.fetchall()
-            return friends
+            return friend
+
+# def get_incoming_friend_requests(user_id):
+#     pool = get_pool()
+#     with pool.connection() as connection:
+#         with connection.cursor(row_factory=dict_row) as cursor:
+#             cursor.execute('''
+#                 SELECT U.user_id, U.username, COUNT(MF.friend_user_id) AS mutual_connections
+#                 FROM Users U
+#                 JOIN User_Friends UF ON U.user_id = UF.user_id
+#                 LEFT JOIN User_Friends MF ON U.user_id = MF.user_id AND MF.friend_user_id = UF.friend_user_id
+#                 WHERE UF.friend_user_id = %s AND MF.friend_user_id IS NULL
+#                 GROUP BY U.user_id
+#             ''', [user_id])
+#             requests = cursor.fetchall()
+#             return requests
 
 def get_incoming_friend_requests(user_id):
     pool = get_pool()
@@ -539,15 +554,29 @@ def update_password(user_id: int, hashed_password: str):
 
 
 def update_concentration(user_id: int, concentration: str):
+   pool = get_pool()
+   with pool.connection() as connection:
+       with connection.cursor() as cursor:
+           cursor.execute('''
+                           UPDATE Users
+                           SET concentration = %s
+                           WHERE user_id = %s
+                           ''', [concentration, user_id])
+           connection.commit()
+
+ 
+def search_users(username: str) -> list[dict[str, Any]]:
     pool = get_pool()
     with pool.connection() as connection:
-        with connection.cursor() as cursor:
+        with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
-                            UPDATE Users
-                            SET concentration = %s
-                            WHERE user_id = %s
-                            ''', [concentration, user_id])
-            connection.commit()
+                SELECT user_id, username
+                FROM Users
+                WHERE username ILIKE %s
+            ''', [f"%{username}%"])
+            users = cursor.fetchall()
+            return users
+
 
 def send_friend_request(friender_id, friendee_id):
     pool = get_pool()
@@ -663,3 +692,4 @@ def get_users_not_friends_with_same_concentration(user_id):
             ''', [user_id, user_id, user_id])
             users = cursor.fetchall()
             return users
+

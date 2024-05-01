@@ -1,23 +1,19 @@
-import os, re
-import random
+import os, re, random
+import psycopg, psycopg2
+from psycopg.rows import dict_row
+from psycopg2 import sql
+from psycopg2.extras import DictCursor
+from typing import Any, List
 from dotenv import load_dotenv
-from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
-from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
+from flask import Flask, abort, render_template, redirect, url_for, request, session, flash, Blueprint, jsonify
 from repositories import database_methods, other_methods
 from flask import request, redirect, url_for, flash, session
 from app_factory import create_app
 
 
+
 load_dotenv()
 app, bcrypt = create_app()
-
-friend_list = [
-    {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
-    {"name": "Emma Johnson", "occupation": "Model at Fashion", "distance": "800m away"},
-    {"name": "Nora Wilson", "occupation": "Writer at Newspaper", "distance": "2.5km away"},
-]
-
-
 
 @app.get('/')
 def sign_in():
@@ -133,9 +129,45 @@ def profile():
     post = database_methods.get_posts_by_user_id(user_id)
     comment = database_methods.get_comments_by_user_id(user_id)
     
-
-
     return render_template('profile.html', user=user, post=post, comment=comment)
+
+  
+@app.post('/search')
+@other_methods.check_user
+def search():
+    if request.method == 'POST':
+        query = request.form.get('query')
+        return redirect(url_for('search_users', query=query))
+    return render_template('search_results.html')
+
+# Example Flask route using the search_users function
+@app.get('/search')
+@other_methods.check_user
+def search_users():
+    query = request.args.get('query', '')
+    if query:
+        users = database_methods.search_users(query)
+        return render_template('search_results.html', users=users, query=query)
+    else:
+        return render_template('search_results.html', users=[], query=query)
+# @app.post('/search')
+# @other_methods.check_user
+# def search():
+#     if request.method == 'POST':
+#         query = request.form.get('query')
+#         return redirect(url_for('search_users', query=query))
+#     return render_template('searchbar_page.html')
+
+# # Example Flask route using the search_users function
+# @app.get('/search')
+# @other_methods.check_user
+# def search_users():
+#     query = request.args.get('query', '')
+#     if query:
+#         users = database_methods.search_users(query)
+#         return render_template('searchbar_page.html', users=users, query=query)
+#     else:
+#         return render_template('searchbar_page.html', users=[], query=query)
 
 
 @app.get('/friends-page')
@@ -151,6 +183,7 @@ def friends():
     # Retrieve outgoing friend requests
     pending_requests = database_methods.get_outgoing_friend_requests(user_id)
     return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
+
 
 @app.post('/user-post')
 @other_methods.check_user
@@ -353,10 +386,7 @@ def settings():
 def save_settings():
     user_id = session.get('user_id')
     if user_id is None:
-        abort(401) 
-
-
-    
+        abort(401)  
     email = request.form.get('email')
     first_name = request.form.get('first-name')
     last_name = request.form.get('last-name')
@@ -364,6 +394,7 @@ def save_settings():
     current_password = request.form.get('current-password')
     new_password = request.form.get('new-password')
     confirm_new_password = request.form.get('confirm-new-password')
+
 
 
     

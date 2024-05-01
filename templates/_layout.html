@@ -18,9 +18,16 @@
                     SkillSwap
                 </p>
             </div>
-            <div>
-                <input id="searchbar" type="text" placeholder="Search"> 
-            </div>
+           
+            <form action="{{ url_for('search') }}" method="POST">
+                <div class="input-group">
+                    <input id="searchbar" type="text" name="query" class="form-control" placeholder="Search for users...">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+            
             <div>
                 <i id="nav-pfp" class="bi bi-person-circle"></i>
             </div>

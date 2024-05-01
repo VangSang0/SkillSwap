@@ -589,6 +589,11 @@ footer{
     margin: 20px;
 }
 
+/* Making search results black hyperlink */
+.black-link {
+    color: black;
+}
+
 /* comments under a post */
 .user-comment{
     margin-top:10px;
@@ -612,3 +617,4 @@ footer{
     margin-bottom: 0px;
     margin-left:660px;
 }
+
