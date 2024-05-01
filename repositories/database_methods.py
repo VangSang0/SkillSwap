@@ -390,6 +390,21 @@ def check_user_like(user_id: int, post_id: int) -> bool:
                             ''', (user_id, post_id))
             return cursor.fetchone() is not None            
 
+def get_all_likes_by_user_id(user_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                            SELECT
+                                post_id
+                            FROM
+                                Post_Likes
+                            WHERE
+                                user_id = %s
+                            ''', [user_id])
+            likes = cursor.fetchall()
+            return likes
+
 def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
     pool = get_pool()
     with pool.connection() as connection:

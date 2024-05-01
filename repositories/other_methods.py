@@ -4,6 +4,8 @@ from functools import wraps
 from flask import session, flash, redirect, url_for
 from datetime import datetime
 
+from repositories import database_methods
+
 def check_user(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -33,3 +35,10 @@ def format_datetime(datetime_obj: str) -> str:
             else:
                 return f'{int(delta)} {unit} ago'
     return 'just now'
+
+def posts_id_of_liked_content(user_id : int):
+    all_likes = database_methods.get_all_likes_by_user_id(user_id)
+    liked_content = []
+    for like in all_likes:
+        liked_content.append(like['post_id'])
+    return liked_content
