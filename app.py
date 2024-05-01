@@ -147,7 +147,21 @@ def search_users():
     query = request.args.get('query', '')
     if query:
         users = database_methods.search_users(query)
-        return render_template('search_results.html', users=users, query=query)
+        current_user = session['user_id']
+        pending_user_friend_requests = database_methods.get_incoming_friend_requests(session['user_id'])
+        sent_user_friend_requests = database_methods.get_outgoing_friend_requests(session['user_id'])
+        friends_list = database_methods.get_user_friends(session['user_id'])
+        pending_request = []
+        for pending_requests in pending_user_friend_requests:
+            pending_request.append(pending_requests['user_id'])
+        sent_request = []
+        for sent_requests in sent_user_friend_requests:
+            sent_request.append(sent_requests['user_id'])
+        friend_ids = []
+        for friends in friends_list:
+            friend_ids.append(friends['user_id'])
+
+        return render_template('search_results.html', users=users, query=query, pending_request=pending_request, sent_request=sent_request, friend_ids=friend_ids, current_user=current_user)
     else:
         return render_template('search_results.html', users=[], query=query)
 # @app.post('/search')
