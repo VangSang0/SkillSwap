@@ -3,8 +3,10 @@
 {% block maincontent %}
     <div class="post">
         <div class="post-header">
-            <i class="bi bi-person-circle"></i>
-            <h6 class="poster">{{ post.author }}</h6>
+            <a href="/view-profile/{{ post.post_author_id }}" class="view-profile">
+                <i class="bi bi-person-circle"></i>
+                <h6 class="poster">{{ post.author }}</h6>
+            </a>
             <p class="post-date">{{ post.datetime_post }}</p>
             {% if post.post_author_id == current_user.user_id %}
                 <form action="/edit-post/{{ post.post_id }}" method="get">
@@ -62,8 +64,10 @@
         <h5>Comments</h5>
         {% for comment in comments %}
             <div class="comment">
-                <i class="bi bi-person-circle"></i>
-                <span>{{ comment.author }} </span>
+                <a href="/view-profile/{{ comment.comment_author_id }}" class="view-profile">
+                    <i class="bi bi-person-circle"></i>
+                    <span>{{ comment.author }} </span>
+                </a>
                 <span> {{ comment.datetime_posted }}</span>
                 <p>{{ comment.content }}</p>
             </div>
