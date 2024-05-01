@@ -75,7 +75,7 @@
 
                 {% if comment.comment_author_id == user.user_id %}
 
-                    <form action="/edit-comment/{{ comment.comment_id }}" method="get">
+                    <form action="/edit-comment/{{ comment.post_id }}/{{ comment.comment_id }}" method="get">
                         <input type="hidden" name="comment_id" value="{{ comment.comment_id }}">
                         <button type="submit" class="btn btn-danger btn-sm" id="edit-button">Edit</button>
                     </form>

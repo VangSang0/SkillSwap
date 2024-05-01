@@ -226,6 +226,9 @@ def delete_post():
         flash("You are not authorized to delete this post")
         return redirect(url_for('home_page'))
     
+    if post['num_likes'] > 0:
+        database_methods.delete_likes_by_post_id(post_id)
+
     database_methods.delete_post(post_id)
     return redirect(url_for('home_page'))
 
@@ -234,16 +237,18 @@ def delete_post():
 def delete_post_from_myposts():
     post_id = request.form.get('delete')
     post = database_methods.get_post_by_id(post_id)
-    
-    if post is None:
-        flash('There is no post with that ID')
-        return redirect(url_for('user_posts'))
+
     if post['post_author_id'] != session['user_id']:
         flash("You are not authorized to delete this post")
         return redirect(url_for('home_page'))
     
+    if post is None:
+        flash('There is no post with that ID')
+        return redirect(url_for('profile'))
+    if post['num_likes'] > 0:
+        database_methods.delete_likes_by_post_id(post_id)
     database_methods.delete_post(post_id)
-    return redirect(url_for('user_posts'))
+    return redirect(url_for('profile'))
 
 
 @app.get('/edit-post/<int:post_id>')
@@ -309,6 +314,21 @@ def delete_comment():
         return redirect(url_for('post', post_id=post_id))
     database_methods.delete_comment(comment_id)
     return redirect(url_for('post', post_id=post_id))
+
+@app.post('/delete-comment-from-mycomments')
+@other_methods.check_user
+def delete_comment_from_myposts():
+    comment_id = request.form.get('delete')
+    comment = database_methods.get_comment_by_id(comment_id)
+    if comment is None:
+        flash('There is no comment with that ID')
+        return redirect(url_for('profile'))
+    if comment['comment_author_id'] != session['user_id']:
+        flash("You are not authorized to delete this comment")
+        return redirect(url_for('profile'))
+    database_methods.delete_comment(comment_id)
+    return redirect(url_for('profile'))
+
 
 @app.get('/edit-comment/<int:post_id>/<int:comment_id>')
 @other_methods.check_user

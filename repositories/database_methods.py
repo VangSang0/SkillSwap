@@ -405,6 +405,18 @@ def get_all_likes_by_user_id(user_id):
             likes = cursor.fetchall()
             return likes
 
+def delete_likes_by_post_id(post_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            DELETE FROM 
+                                Post_Likes
+                            WHERE
+                                post_id = %s
+                            ''', [post_id])
+            # what can I return here?
+
 def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
     pool = get_pool()
     with pool.connection() as connection:
