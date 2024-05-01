@@ -110,6 +110,8 @@ def home_page():
     random.shuffle(all_posts)
     for post in all_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+        post['num_comments'] = database_methods.get_num_comments_by_post_id(post['post_id'])
+    
     
     current_user = database_methods.get_user_by_id(session['user_id'])
     liked_content = other_methods.posts_id_of_liked_content(session['user_id'])
@@ -228,6 +230,8 @@ def delete_post():
     
     if post['num_likes'] > 0:
         database_methods.delete_likes_by_post_id(post_id)
+    if post['num_comments'] > 0:
+        database_methods.delete_comments_by_post_id(post_id)
 
     database_methods.delete_post(post_id)
     return redirect(url_for('home_page'))
@@ -245,8 +249,13 @@ def delete_post_from_myposts():
     if post is None:
         flash('There is no post with that ID')
         return redirect(url_for('profile'))
+    
     if post['num_likes'] > 0:
         database_methods.delete_likes_by_post_id(post_id)
+    
+    if post['num_comments'] > 0:
+        database_methods.delete_comments_by_post_id(post_id)
+
     database_methods.delete_post(post_id)
     return redirect(url_for('profile'))
 

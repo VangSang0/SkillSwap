@@ -253,7 +253,7 @@ def get_comments_by_post_id(post_id: int):
                             ''', [post_id])
             comments = cursor.fetchall()
             return comments
-          
+
 def get_comment_by_id(comment_id: int):
     pool = get_pool()
     with pool.connection() as connection:
@@ -289,6 +289,18 @@ def delete_comment(comment_id: int) -> bool:
                             ''', [comment_id])
             # what can I return here?
 
+def delete_comments_by_post_id(post_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            DELETE FROM 
+                                Comments
+                            WHERE
+                                post_id = %s
+                            ''', [post_id])
+            # what can I return here?
+
 def edit_comment(comment_id: int, comment_content: str) -> bool:
     pool = get_pool()
     with pool.connection() as connection:
@@ -303,6 +315,20 @@ def edit_comment(comment_id: int, comment_content: str) -> bool:
                             ''', [comment_content, comment_id])
             # what can I return here?
 
+def get_num_comments_by_post_id(post_id: int) -> int:
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            SELECT 
+                                COUNT(comment_id)
+                            FROM 
+                                Comments
+                            WHERE
+                                post_id = %s
+                            ''', [post_id])
+            num_comments = cursor.fetchone()
+            return num_comments[0] if num_comments else 0
 
 def toggle_like(user_id: int, post_id: int) -> Tuple[int, str]:
     pool = get_pool()  # Assume get_pool returns a connection pool
