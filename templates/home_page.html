@@ -25,10 +25,10 @@
         <div class="post">
             <div class="post-header">
                 {% if post.post_author_id != current_user.user_id %}
-                <a href="/view-profile/{{ post.post_author_id }}" class="view-profile">
-                    <i class="bi bi-person-circle"></i>
-                    <h6 class="poster">{{ post.author }}</h6>
-                </a>
+                    <a href="/view-profile/{{ post.post_author_id }}" class="view-profile">
+                        <i class="bi bi-person-circle"></i>
+                        <h6 class="poster">{{ post.author }}</h6>
+                    </a>
                 {% else %}
                     <i class="bi bi-person-circle"></i>
                     <h6 class="poster">{{ post.author }}</h6>
@@ -45,20 +45,20 @@
                 {% endif %}
             </div>
             <div class="post-area">
-                <a href="/posts/{{ post.post_id }}" class="click-post">Click here to view the post</a>
+                <a href="/posts/{{ post.post_id }}" class="click-post">View Post</a>
                 <!-- <h3 class="post-title">{{ post.title }}</h3> -->
                 <p id="post-content">
                     {{ post.post_content }}
                 </p>
-                <div class="post-btns">
+                <div class="post-btns-home">
                     <!-- Like button -->
                     <button class="like-button" data-post-id="{{ post.post_id }}" onclick="likePost(this)">
                         <i class="bi bi-heart"></i>
                     </button>
-                    <p>{{ post.num_likes }}</p>
-                    <i class="bi bi-chat-square-text"></i>
+                    <p id="num_of_likes">{{ post.num_likes }}</p>
+                    <button class="like-button"><i class="bi bi-chat-square-text"></i></button>
                     <p>{{ post.num_comments }}</p>
-                    <i class="bi bi-share"></i>
+                    <button class="like-button"><i class="bi bi-share"></i></button>
                 </div>
             </div>
         </div>
@@ -67,16 +67,20 @@
 {% endblock %}
 
 {% block rightcontent %}
-    <div class="recomm-container">
-        <div class="recomm-user">
-            <i class="bi bi-person-circle"></i>
-            <span>username</span>
-        </div>
-        <div class="recomm-text">
-            <p class="recomm-content">Grade Year: jinja variable</p>
-            <p class="recomm-content">Concentration: jinja variable</p>
-            <p class="recomm-content">Completed: jinja variable</p>
-            <p class="recomm-content">Enrolled: jinja variable</p>
-        </div>    
+    <div class="recomm-header">
+        <h4>Recommended Users</h4>
     </div>
+    {% for users in user_recs %}
+        <div class="recomm-container">
+            <div class="recomm-user">
+                <i class="bi bi-person-circle"></i>
+                <a href="/view-profile/{{ users.user_id }}" class="view-profile">
+                <span>{{ users.username }}</span> 
+                </a>
+            </div>
+            <div class="recomm-text">
+                <p class="recomm-content">Concentration: {{ users.concentration }}</p>
+            </div>    
+        </div>
+    {% endfor %}
 {% endblock %}

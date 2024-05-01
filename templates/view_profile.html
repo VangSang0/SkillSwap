@@ -15,7 +15,7 @@
 
         <div class="user-bio">
             <h2>{{ user.first_name }} {{ user.last_name}} </h2>
-            <h4>{{ user.concentration }} </h4>
+            <h5>{{ user.concentration }} </h5>
         </div>
             {% if is_requested %}
                 <form action="/accept-friend-request" method="post">
@@ -41,12 +41,11 @@
     </div>
 
     <div class="profile-sections">
-        <a href="#"><h4 id="profile_post_btn">Posts</h4></a>
-        <a href="#"><h4 id="profile_replies_btn">Replies</h4></a>
-        <!-- Under replies, users comments will appear -->
+        <button id="defaultOpen" class="profile-btns" onclick="openBtn(event,'MyPosts')">My Posts</button>
+        <button id="profile_replies_btn" class="profile-btns" onclick="openBtn(event,'MyComments')">My Comments</button>
     </div>
-    <div class="profile-content">
 
+    <div class="btnContent" id="MyPosts">
         {% for post in posts %}
             <div class="post">
                 <div class="post-header">
@@ -55,7 +54,7 @@
                     <p class="post-date">{{ post.datetime_post }}</p>
                 </div>
                 <div class="post-area">
-                    <a href="/posts/{{ post.post_id }}" class="click-post">Click here to view the post</a>
+                    <a href="/posts/{{ post.post_id }}" class="click-post">Click to view</a>
                     <!-- <h3 class="post-title">{{ post.title }}</h3> -->
                     <p id="post-content">
                         {{ post.post_content }}
@@ -72,6 +71,37 @@
         {% endfor %}
 
         
+    </div>
+    <div class="btnContent" id="MyComments">
+
+        {% for comment in comment %}
+
+        <div class="comment">
+            <div class="comment-header">
+                <i class="bi bi-person-circle"></i>
+                <h6 class="commenter">{{ comment.author }}</h6>
+                <p class="comment-date">{{ comment.datetime_posted }}</p>
+
+                {% if comment.comment_author_id == user.user_id %}
+
+                    <form action="/edit-comment/{{ comment.comment_id }}" method="get">
+                        <input type="hidden" name="comment_id" value="{{ comment.comment_id }}">
+                        <button type="submit" class="btn btn-danger btn-sm" id="edit-button">Edit</button>
+                    </form>
+                    <form action="/delete-comment-from-mycomments" method="post">
+                        <button name="delete" type="submit" class="btn btn-danger btn-sm" id="delete-button" value="{{ comment.comment_id }}" >Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="comment-area">
+                <a href="/posts/{{ comment.post_id }}" class="click-post-comm">Click to view</a>
+                <p id="comment-content">
+                    {{ comment.content }}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+
     </div>
 
 {% endblock %}
