@@ -452,8 +452,6 @@ def view_profile(user_id):
 def send_friend_request():
     friender_id = session['user_id']
     friendee_id = request.form.get('friend_id')
-    print(friender_id)
-    print(friendee_id)
     if not friendee_id:
         flash("Unable to send Friend Request at this time! Please try again later!")
         return redirect(url_for('view_profile'), user_id=request.form.get('friend_id'))
