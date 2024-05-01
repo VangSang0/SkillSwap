@@ -1,23 +1,19 @@
-import os, re
-import random
+import os, re, random
+import psycopg, psycopg2
+from psycopg.rows import dict_row
+from psycopg2 import sql
+from psycopg2.extras import DictCursor
+from typing import Any, List
 from dotenv import load_dotenv
-from flask import Flask, abort, render_template, redirect, url_for, request, session, flash
-from flask import Flask, jsonify, abort, render_template, redirect, url_for, request, session, flash
+from flask import Flask, abort, render_template, redirect, url_for, request, session, flash, Blueprint, jsonify
 from repositories import database_methods, other_methods
 from flask import request, redirect, url_for, flash, session
 from app_factory import create_app
 
 
+
 load_dotenv()
 app, bcrypt = create_app()
-
-friend_list = [
-    {"name": "Sophia Page", "occupation": "Software Engineer", "distance": "500m away"},
-    {"name": "Emma Johnson", "occupation": "Model at Fashion", "distance": "800m away"},
-    {"name": "Nora Wilson", "occupation": "Writer at Newspaper", "distance": "2.5km away"},
-]
-
-
 
 @app.get('/')
 def sign_in():
@@ -52,6 +48,7 @@ def signing_up():
     user_email = request.form.get('email')
     first_name = request.form.get('first-name')
     last_name = request.form.get('last-name')
+    concentration = request.form.get('concentration')   
     username = request.form.get('username')
     password = request.form.get('password')
     confirm_password = request.form.get('confirm-password')
@@ -91,7 +88,7 @@ def signing_up():
         return redirect(url_for('sign_up_tab'))
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = database_methods.create_user(first_name, last_name, user_email, username, hashed_password)
+    new_user = database_methods.create_user(first_name, last_name, user_email, username, hashed_password, concentration)
 
     flash(f"Account created successfully {new_user['username']}! Please sign in to continue.")
 
@@ -117,7 +114,8 @@ def home_page():
     current_user = database_methods.get_user_by_id(session['user_id'])
     liked_content = other_methods.posts_id_of_liked_content(session['user_id'])
 
-    return render_template('home_page.html', all_posts=all_posts, current_user=current_user, liked_content=liked_content)
+    user_recs = database_methods.get_users_not_friends_with_same_concentration(session['user_id'])
+    return render_template('home_page.html', all_posts=all_posts, current_user=current_user, user_recs=user_recs, liked_content=liked_content)
 
 
 @app.get('/profile-page')
@@ -130,9 +128,30 @@ def profile():
     user_id = session.get('user_id')
     user = database_methods.get_user_information_by_id(user_id)
     post = database_methods.get_posts_by_user_id(user_id)
+    comment = database_methods.get_comments_by_user_id(user_id)
+    
+    return render_template('profile.html', user=user, post=post, comment=comment)
 
 
-    return render_template('profile.html', user=user, post=post)
+@app.post('/search')
+@other_methods.check_user
+def search():
+    if request.method == 'POST':
+        query = request.form.get('query')
+        return redirect(url_for('search_users', query=query))
+    return render_template('search_results.html')
+
+# Example Flask route using the search_users function
+@app.get('/search')
+@other_methods.check_user
+def search_users():
+    query = request.args.get('query', '')
+    if query:
+        users = database_methods.search_users(query)
+        return render_template('search_results.html', users=users, query=query)
+    else:
+        return render_template('search_results.html', users=[], query=query)
+
 
 
 @app.get('/friends-page')
@@ -147,7 +166,8 @@ def friends():
     incoming_requests = database_methods.get_incoming_friend_requests(user_id)
     # Retrieve outgoing friend requests
     pending_requests = database_methods.get_outgoing_friend_requests(user_id)
-    return render_template('friends_page.html',friend_list=friend_list, friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
+    return render_template('friends_page.html', friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
+
 
 @app.post('/user-post')
 @other_methods.check_user
@@ -242,15 +262,7 @@ def edit_post_submit():
     database_methods.edit_post(post_id, post_content)
     return redirect(url_for('home_page'))
 
-@app.get('/users-posts')
-@other_methods.check_user
-def user_posts():
-    user_id = session['user_id']
-    user = database_methods.get_user_by_id(user_id)
-    user_posts = database_methods.get_posts_by_user_id(user_id)
-    for post in user_posts:
-        post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
-    return render_template('users_posts.html', user=user, user_posts=user_posts)
+
 
 @app.post('/comment')
 @other_methods.check_user
@@ -358,10 +370,7 @@ def settings():
 def save_settings():
     user_id = session.get('user_id')
     if user_id is None:
-        abort(401) 
-
-
-    
+        abort(401)  
     email = request.form.get('email')
     first_name = request.form.get('first-name')
     last_name = request.form.get('last-name')
@@ -369,6 +378,7 @@ def save_settings():
     current_password = request.form.get('current-password')
     new_password = request.form.get('new-password')
     confirm_new_password = request.form.get('confirm-new-password')
+
 
 
     
@@ -413,6 +423,7 @@ def view_profile(user_id):
     for post in users_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
     
+    comment = database_methods.get_comments_by_user_id(user_id)
     pending_friend_request = database_methods.get_pending_friend_request(session['user_id'], user_id)
     if pending_friend_request:
         is_pending_friend_request = True
@@ -431,7 +442,7 @@ def view_profile(user_id):
     
 
 
-    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested)
+    return render_template('view_profile.html', user=user, posts=users_posts, is_pending_friend_request=is_pending_friend_request, is_friend=is_friend, is_requested=is_requested, comment=comment)
 
 @app.post('/send-friend-request')
 @other_methods.check_user

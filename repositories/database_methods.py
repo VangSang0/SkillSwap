@@ -35,15 +35,15 @@ def does_email_exist(email: str) -> bool:
             user_id = cursor.fetchone()
             return user_id is not None
 
-def create_user(first_name : str, last_name : str, user_email: str, username: str, hashed_password: str):
+def create_user(first_name : str, last_name : str, user_email: str, username: str, hashed_password: str, concentration: str):
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute('''
-                            INSERT INTO Users (first_name, last_name, email, username, hash_pass)
-                            VALUES (%s, %s, %s, %s, %s)
+                            INSERT INTO Users (first_name, last_name, email, username, hash_pass, concentration)
+                            VALUES (%s, %s, %s, %s, %s, %s)
                             RETURNING user_id
-                            ''', [first_name, last_name, user_email, username, hashed_password])
+                            ''', [first_name, last_name, user_email, username, hashed_password, concentration])
             user_id = cursor.fetchone()
             if user_id is None:
                 raise Exception('User not created')
@@ -425,6 +425,31 @@ def get_user_information_by_id(user_id: int) -> dict[str, Any] | None:
             user = cursor.fetchone()
             return user
 
+def get_comments_by_user_id(user_id: int):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT
+                    Comments.comment_id,
+                    Comments.comment_author_id,
+                    Users.username AS author,
+                    Comments.datetime_posted,
+                    Comments.content,
+                    Comments.post_id
+                FROM
+                    Comments
+                JOIN
+                    Users
+                ON
+                    Comments.comment_author_id = Users.user_id
+                WHERE
+                    comment_author_id = %s
+                ORDER BY
+                    datetime_posted ASC
+                ''', [user_id])
+            comment = cursor.fetchall()
+            return comment
 
 def get_user_friends(user_id):
     pool = get_pool()
@@ -440,6 +465,21 @@ def get_user_friends(user_id):
             ''', [user_id])
             friends = cursor.fetchall()
             return friends
+
+# def get_incoming_friend_requests(user_id):
+#     pool = get_pool()
+#     with pool.connection() as connection:
+#         with connection.cursor(row_factory=dict_row) as cursor:
+#             cursor.execute('''
+#                 SELECT U.user_id, U.username, COUNT(MF.friend_user_id) AS mutual_connections
+#                 FROM Users U
+#                 JOIN User_Friends UF ON U.user_id = UF.user_id
+#                 LEFT JOIN User_Friends MF ON U.user_id = MF.user_id AND MF.friend_user_id = UF.friend_user_id
+#                 WHERE UF.friend_user_id = %s AND MF.friend_user_id IS NULL
+#                 GROUP BY U.user_id
+#             ''', [user_id])
+#             requests = cursor.fetchall()
+#             return requests
 
 def get_incoming_friend_requests(user_id):
     pool = get_pool()
@@ -529,15 +569,29 @@ def update_password(user_id: int, hashed_password: str):
 
 
 def update_concentration(user_id: int, concentration: str):
+   pool = get_pool()
+   with pool.connection() as connection:
+       with connection.cursor() as cursor:
+           cursor.execute('''
+                           UPDATE Users
+                           SET concentration = %s
+                           WHERE user_id = %s
+                           ''', [concentration, user_id])
+           connection.commit()
+
+ 
+def search_users(username: str) -> list[dict[str, Any]]:
     pool = get_pool()
     with pool.connection() as connection:
-        with connection.cursor() as cursor:
+        with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
-                            UPDATE Users
-                            SET concentration = %s
-                            WHERE user_id = %s
-                            ''', [concentration, user_id])
-            connection.commit()
+                SELECT user_id, username
+                FROM Users
+                WHERE username ILIKE %s
+            ''', [f"%{username}%"])
+            users = cursor.fetchall()
+            return users
+
 
 def send_friend_request(friender_id, friendee_id):
     pool = get_pool()
@@ -623,3 +677,34 @@ def unfriend(user_id, friend_id):
                 WHERE user_id = %s AND friend_user_id = %s
             ''', [friend_id, user_id])
             return True
+
+def get_users_not_friends_with_same_concentration(user_id):
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor(row_factory=dict_row) as cursor:
+            cursor.execute('''
+                SELECT 
+                    U.user_id,
+                    U.username,
+                    U.concentration
+                FROM 
+                    Users U
+                WHERE 
+                    U.user_id != %s AND U.concentration = (
+                    SELECT 
+                        concentration
+                    FROM 
+                        Users
+                    WHERE
+                        user_id = %s
+                ) AND U.user_id NOT IN (
+                    SELECT 
+                        friend_user_id
+                    FROM 
+                        User_Friends
+                    WHERE user_id = %s
+                )
+            ''', [user_id, user_id, user_id])
+            users = cursor.fetchall()
+            return users
+

@@ -1,0 +1,29 @@
+{% extends "_layout.html" %}
+
+{% block title %}
+    SkillSwap | Search Results
+{% endblock %}
+
+{% block maincontent %}
+    <div class="container mt-5">
+        <h3>Search Results for "{{ query }}"</h3>
+        <ul class="list-group mt-3">
+            {% for user in users %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-person-circle"></i>
+                        <!-- Link to view user profile with custom class -->
+                        <a href="{{ url_for('profile', username=user.username) }}" class="text-decoration-none black-link">{{ user.username }}</a>
+                    </div>
+                    <!-- Button to add friend -->
+                    <form action="{{ url_for('add_friend') }}" method="POST">
+                        <input type="hidden" name="friend_id" value="{{ user.user_id }}">
+                        <button type="submit" class="btn btn-success btn-sm">Add Friend</button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="list-group-item">No results found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
