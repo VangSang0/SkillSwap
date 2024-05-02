@@ -8,5 +8,3 @@ def create_app():
     bcrypt = Bcrypt(app)
     app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
     return app, bcrypt
-
-# app, bcrypt, db = create_app()
