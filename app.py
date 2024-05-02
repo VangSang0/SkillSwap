@@ -425,6 +425,7 @@ def save_settings():
     current_password = request.form.get('current-password')
     new_password = request.form.get('new-password')
     confirm_new_password = request.form.get('confirm-new-password')
+    concentration = request.form.get('concentration')
 
 
 
@@ -446,7 +447,7 @@ def save_settings():
             else:
                 flash("Current password is incorrect", "error")
         
-        database_methods.update_user_settings(user_id, email, first_name, last_name)
+        database_methods.update_user_settings(user_id, email, first_name, last_name, concentration)
         flash("Settings saved successfully!", "success")
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")
