@@ -1,21 +1,24 @@
 
+const textAreaPost = document.getElementById('textpostarea');
+if (textAreaPost) {
+    const postCharCount = document.getElementById('char-count-post');
 
-const postArea = document.getElementById('textpostarea');
-const postCharCount = document.getElementById('char-count');
+    textAreaPost.addEventListener('input', function(e) {
+        const remaining = 255 - e.currentTarget.value.length;
+        postCharCount.textContent = remaining + ' characters remaining';
+    });
+}
 
-postArea.addEventListener('input', function() {
-    const remaining = 255 - postArea.value.length;
-    postCharCount.textContent = remaining + ' characters remaining';
-});
+const textAreaComment = document.getElementById('textcommentarea');
+if (textAreaComment) {
+    const commentCharCount = document.getElementById('char-count-comment');
 
+    textAreaComment.addEventListener('input', function(e) {
+        const remaining = 255 - e.currentTarget.value.length;
+        commentCharCount.textContent = remaining + ' characters remaining';
+    });
+}
 
-const commentArea = document.getElementById('textcommentarea');
-const commentCharCount = document.getElementById('char-count');
-
-commentArea.addEventListener('input', function() {
-    const remaining = 255 - commentArea.value.length;
-    postCharCount.textContent = remaining + ' characters remaining';
-});
 
 
 

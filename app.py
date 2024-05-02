@@ -98,7 +98,8 @@ def signing_up():
 
 @app.get('/logout')
 def logout():
-    session.pop('user_id', None)
+    session.clear()
+    # session.pop('user_id', None)
     flash("You have been successfully logged out!")
     return redirect(url_for('sign_in'))
 
@@ -575,8 +576,7 @@ def delete_account(user_id):
     if user_id is not session['user_id']:
         flash("You do not have access to delete this account")
         return redirect(url_for('home_page'))
-    account_deleted = database_methods.delete_user_account(user_id)
-    if account_deleted:
-        session.pop(user_id)
-        flash("Account successfully deleted")
-        return redirect(url_for('signing-in'))
+    database_methods.delete_user_account(user_id)
+    session.pop('user_id', 'None')
+    flash("Account successfully deleted")
+    return redirect(url_for('sign_in'))

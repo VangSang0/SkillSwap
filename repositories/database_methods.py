@@ -751,17 +751,21 @@ def delete_user_account (user_id):
     with pool.connection() as connection:
         with connection.cursor(row_factory=dict_row) as cursor:
             cursor.execute('''
-                BEGIN TRANSACTION;
                 DELETE FROM comments WHERE comment_author_id = %s;
+                ''' , [user_id])
+            cursor.execute('''
                 DELETE FROM post_likes WHERE user_id = %s;
-                DELETE FROM posts WHERE user_id = %s;
+                ''' , [user_id])
+            cursor.execute('''
+                DELETE FROM posts WHERE post_author_id = %s;
+                ''' , [user_id])
+            cursor.execute('''
                 DELETE FROM user_friends WHERE user_id = %s OR friend_user_id = %s ;
+                ''', [user_id, user_id] )
+            cursor.execute('''
                 DELETE FROM pending_friend_requests WHERE friender_id = %s OR friendee_id = %s ;
+                ''', [user_id, user_id] )
+            cursor.execute('''
                 DELETE FROM users WHERE user_id = %s;
-                COMMIT; 
-                ''', [user_id, user_id, user_id, user_id, user_id, user_id, user_id, user_id] )
+                ''', [user_id] )
             return True
-                    
-                     
-                           
-    
