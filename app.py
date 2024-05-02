@@ -98,7 +98,8 @@ def signing_up():
 
 @app.get('/logout')
 def logout():
-    session.pop('user_id', None)
+    session.clear()
+    # session.pop('user_id', None)
     flash("You have been successfully logged out!")
     return redirect(url_for('sign_in'))
 
@@ -184,6 +185,8 @@ def friends():
     # Retrieve outgoing friend requests
     pending_requests = database_methods.get_outgoing_friend_requests(user_id)
     return render_template('friends_page.html', friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
+
+
 
 
 @app.post('/user-post')
@@ -568,3 +571,15 @@ def unfriend():
     else:
         abort(404)
     return redirect(url_for('friends'))
+
+
+@app.post('/delete-account/<int:user_id>')
+@other_methods.check_user
+def delete_account(user_id):
+    if user_id is not session['user_id']:
+        flash("You do not have access to delete this account")
+        return redirect(url_for('home_page'))
+    database_methods.delete_user_account(user_id)
+    session.pop('user_id', 'None')
+    flash("Account successfully deleted")
+    return redirect(url_for('sign_in'))
