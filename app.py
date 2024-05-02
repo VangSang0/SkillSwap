@@ -186,6 +186,8 @@ def friends():
     return render_template('friends_page.html', friends=friends, incoming_requests=incoming_requests, pending_requests=pending_requests)
 
 
+
+
 @app.post('/user-post')
 @other_methods.check_user
 def user_post():
@@ -565,3 +567,16 @@ def unfriend():
     else:
         abort(404)
     return redirect(url_for('friends'))
+
+
+@app.post('/delete-account/<int:user_id>')
+@other_methods.check_user
+def delete_account(user_id):
+    if user_id is not session['user_id']:
+        flash("You do not have access to delete this account")
+        return redirect(url_for('home_page'))
+    account_deleted = database_methods.delete_user_account(user_id)
+    if account_deleted:
+        session.pop(user_id)
+        flash("Account successfully deleted")
+        return redirect(url_for('signing-in'))
