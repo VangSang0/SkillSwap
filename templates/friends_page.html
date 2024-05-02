@@ -15,7 +15,7 @@
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-3">
                                 <!-- Display user's profile image -->
-                                <img src="{{ url_for('static', filename='avatar_placeholder.png') }}" alt="Requester Image" class="img-fluid rounded-circle">
+                                <i id="incoming-friend-pfp"class="bi bi-person-circle"></i>
                             </div>
                             <div class="col-md-6">
                                 <h6>{{ request.username }}</h6>
@@ -47,7 +47,7 @@
                     {% for friend in friends %}
                         <div class="col-md-4 mb-3">
                             <div class="friend-item text-center">
-                                <img src="{{ url_for('static', filename='avatar_placeholder.png') }}" alt="Friend Image" class="img-fluid rounded-circle mb-2">
+                                <i id="friend-pfp" class="bi bi-person-circle"></i>
                                 <h6 class="mb-1">{{ friend.username }}</h6>
                                 <p class="text-muted">{{ friend.mutual_friends_count }} mutual friends</p>
                                 <a href="/view-profile/{{ friend.user_id }}" class="btn btn-sm btn-primary">View Profile</a>
