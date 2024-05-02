@@ -8,12 +8,15 @@ from dotenv import load_dotenv
 from flask import Flask, abort, render_template, redirect, url_for, request, session, flash, Blueprint, jsonify
 from repositories import database_methods, other_methods
 from flask import request, redirect, url_for, flash, session
-from app_factory import create_app
+from flask_bcrypt import Bcrypt
+# from app_factory import create_app
 
 
 
 load_dotenv()
-app, bcrypt = create_app()
+app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
+bcrypt = Bcrypt(app)
 
 @app.get('/')
 def sign_in():
