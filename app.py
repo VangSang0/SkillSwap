@@ -210,6 +210,8 @@ def post(post_id):
     if post is None or not post:
         abort(404)
     post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+    post['num_comments'] = database_methods.get_num_comments_by_post_id(post['post_id'])
+
     for comment in comments:
         comment['datetime_posted'] = other_methods.format_datetime(comment['datetime_posted'])
     liked_content = other_methods.posts_id_of_liked_content(session['user_id'])
@@ -467,6 +469,7 @@ def view_profile(user_id):
     users_posts = database_methods.get_posts_by_user_id(user_id)
     for post in users_posts:
         post['datetime_post'] = other_methods.format_datetime(post['datetime_post'])
+        post['num_comments'] = database_methods.get_num_comments_by_post_id(post['post_id'])
     
     comment = database_methods.get_comments_by_user_id(user_id)
     pending_friend_request = database_methods.get_pending_friend_request(session['user_id'], user_id)
