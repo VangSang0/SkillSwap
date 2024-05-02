@@ -570,15 +570,15 @@ def get_user_by_id(user_id: int) -> dict[str, Any] | None: #settings(nicole)
                 return user
 
 
-def update_user_settings(user_id: int, email: str, first_name: str, last_name: str):
+def update_user_settings(user_id: int, email: str, first_name: str, last_name: str, concentration:str):
     pool = get_pool()
     with pool.connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute('''
                             UPDATE Users
-                            SET email = %s, first_name = %s, last_name = %s
+                            SET email = %s, first_name = %s, last_name = %s, concentration = %s
                             WHERE user_id = %s
-                            ''', [email, first_name, last_name, user_id])
+                            ''', [email, first_name, last_name, concentration, user_id])
             connection.commit()
 
 
@@ -607,17 +607,17 @@ def update_password(user_id: int, hashed_password: str):
 
 
 def update_concentration(user_id: int, concentration: str):
-   pool = get_pool()
-   with pool.connection() as connection:
-       with connection.cursor() as cursor:
-           cursor.execute('''
-                           UPDATE Users
-                           SET concentration = %s
-                           WHERE user_id = %s
-                           ''', [concentration, user_id])
-           connection.commit()
+    pool = get_pool()
+    with pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                            UPDATE Users
+                            SET concentration = %s
+                            WHERE user_id = %s
+                            ''', [concentration, user_id])
+            connection.commit()
 
- 
+
 def search_users(username: str) -> list[dict[str, Any]]:
     pool = get_pool()
     with pool.connection() as connection:
