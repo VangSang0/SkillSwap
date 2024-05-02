@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS Users(
     last_name       VARCHAR(225)    NOT NULL,   
     email           VARCHAR(225)    NOT NULL UNIQUE, 
     username        VARCHAR(225)    NOT NULL UNIQUE,  
-    is_TA           BOOLEAN         NOT NULL DEFAULT FALSE,
     hash_pass       VARCHAR(225)    NOT NULL,   
     concentration   VARCHAR(255)    DEFAULT 'None',
 
@@ -44,15 +43,6 @@ CREATE TABLE IF NOT EXISTS Comments(
 
 );
 
-CREATE TABLE IF NOT EXISTS Courses(
-    course_id       SERIAL,
-    course_name     VARCHAR(225)    NOT NULL,
-    credit_hrs      INTEGER         NOT NULL,
-
-
-    PRIMARY KEY(course_id)
-);
-
 CREATE TABLE IF NOT EXISTS User_Friends(
     user_id              INTEGER    NOT NULL,
     friend_user_id       INTEGER    NOT NULL,
@@ -61,15 +51,6 @@ CREATE TABLE IF NOT EXISTS User_Friends(
     PRIMARY KEY (user_id, friend_user_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
     );
-
-CREATE TABLE IF NOT EXISTS User_Courses(
-    user_id         INTEGER    NOT NULL,
-    course_id       INTEGER    NOT NULL,
-
-    PRIMARY KEY(user_id, course_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
-);
 
 
 CREATE TABLE IF NOT EXISTS Post_Likes(
@@ -80,10 +61,10 @@ CREATE TABLE IF NOT EXISTS Post_Likes(
     PRIMARY KEY(like_id),
     FOREIGN KEY (post_id) REFERENCES Posts(post_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
-)
+);
 
 CREATE TABLE IF NOT EXISTS pending_friend_requests(
     friend_request_id  SERIAL,
     friender_id        INTEGER      NOT NULL,
     friendee_id        INTEGER      NOT NULL
-)
+);
