@@ -20,13 +20,13 @@
             </div>
             <form action="{{ url_for('search') }}" method="POST">
                 <div class="input-group">
-                    <input id="searchbar" type="text" name="query" class="form-control" placeholder="Search for users...">
+                    <input id="searchbar" type="text" name="query" class="form-control me-2" placeholder="Search for users...">
                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button class="search_btn" type="submit"><i class="bi bi-search"></i></button>
                     </div>
                 </div>
-            </form>
-            
+            </form> 
+
             <div>
                 <i id="nav-pfp" class="bi bi-person-circle"></i>
             </div>
