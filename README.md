@@ -9,19 +9,15 @@ This application was created for students to network with fellow classmates, fig
 - Others: HTML, CSS, JavaScript (Frontend)
 
 # Code Example
-@app.post('/signing-in')
-def signing_in():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    if not username or not password:
-        flash("Please enter the required fields")
-        return redirect(url_for('sign_in'))
-    user = database_methods.get_user_by_username(username)
-    if user is None:
-        flash("Invalid username or password")
-        return redirect(url_for('sign_in'))
-    if not bcrypt.check_password_hash(user['hashed_password'], password):
-        flash("Invalid username or password")
-        return redirect(url_for('sign_in'))
-    session['user_id'] = user['user_id']
-    return redirect(url_for('home_page'))
+- The code snippet below represents the sign-in process as it will check and validate the credentials before giving the user a "session" token.
+ - ![image](https://github.com/user-attachments/assets/b451e201-7df3-4493-80e7-224d253ae581)
+
+
+- This code snippet checks for the user's session token and makes sure the user is authorized to access the pages after signing in.
+ - ![image](https://github.com/user-attachments/assets/dbdf950a-de10-4a9c-823e-a2f07292532f)
+
+# Credits
+- Lina Urrego (https://github.com/linalu12)
+- Adalia Thao (https://github.com/dali-t)
+- Hasitha Kommera (https://github.com/hasikom12345)
+- Nicole Cevallos (https://github.com/NicoleCevallos)
